@@ -2,7 +2,7 @@
 
 To start app to dev you need to type
 - `npm start`
-- in second terminal `npm run electron
+- in second terminal `npm run electron`
 
 ### `npm start`
 
