@@ -1,18 +1,7 @@
 defmodule Scraper do
-  @moduledoc """
-  Documentation for `Scraper`.
-  """
+  require Logger
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Scraper.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def start(_type, _args) do
+    Logger.info("hello")
   end
 end
