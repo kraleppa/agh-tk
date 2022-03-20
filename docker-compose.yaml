@@ -4,17 +4,30 @@ services:
     container_name: 'rabbitmq'
     image: rabbitmq:3-management-alpine
     ports:
-        - 5672:5672
-        - 15672:15672
+      - 5672:5672
+      - 15672:15672
     volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
 
   scraper:
     container_name: scraper
     build: ./scraper
     depends_on:
-        - rabbitmq
+      - rabbitmq
+
+  frontend:
+    build: ./frontend
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+    depends_on: 
+      - rabbitmq
+      - scraper
   
 networks:
   rabbitmq_go_net:
