@@ -9,18 +9,12 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
 
   scraper:
     container_name: scraper
     build: ./scraper
     depends_on:
-      rabbitmq:
-        condition: service_healthy
+      - rabbitmq
 
   frontend:
     container_name: frontend
