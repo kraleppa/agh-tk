@@ -2,19 +2,25 @@ version: "3.2"
 services:
   rabbitmq:
     container_name: 'rabbitmq'
-    image: rabbitmq:3-management-alpine
+    build: ./rabbitmq
     ports:
       - 5672:5672
       - 15672:15672
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 
   scraper:
     container_name: scraper
     build: ./scraper
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
