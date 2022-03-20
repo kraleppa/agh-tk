@@ -30,6 +30,3 @@ services:
       - rabbitmq
       - scraper
       
-networks:
-  rabbitmq_go_net:
-    driver: bridge 
