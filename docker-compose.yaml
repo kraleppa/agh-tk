@@ -29,4 +29,7 @@ services:
     depends_on: 
       - rabbitmq
       - scraper
-  
+      
+networks:
+  rabbitmq_go_net:
+    driver: bridge 
