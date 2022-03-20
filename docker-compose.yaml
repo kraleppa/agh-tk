@@ -23,6 +23,7 @@ services:
         condition: service_healthy
 
   frontend:
+    container_name: frontend
     build: ./frontend
     environment:
       CHOKIDAR_USEPOLLING: "true"
