@@ -1,0 +1,266 @@
+{
+    "rabbit_version": "3.9.13",
+    "rabbitmq_version": "3.9.13",
+    "users": [
+        {
+            "name": "admin",
+            "password": "admin",
+            "tags": "administrator",
+            "limits": {}
+        }
+    ],
+    "vhosts": [
+        {
+            "name": "/"
+        }
+    ],
+    "permissions": [
+        {
+            "user": "admin",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "topic_permissions": [],
+    "parameters": [],
+    "global_parameters": [
+        {
+            "name": "cluster_name",
+            "value": "rabbit@rabbitmq-tk-cluster"
+        }
+    ],
+    "policies": [],
+    "exchanges": [
+        {
+            "name": "words",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "format",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "text",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "result",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "queues": [
+        {
+            "name": "words.synonyms",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "words.typos",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "words.forms",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "words.scraper",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "format.microsoft",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "format.txt",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "format.image",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "format.movie",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "format.archive",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "text",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "result",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "words",
+            "vhost": "/",
+            "destination": "words.synonyms",
+            "destination_type": "queue",
+            "routing_key": "words.synonyms",
+            "arguments": {}
+        },
+        {
+            "source": "words",
+            "vhost": "/",
+            "destination": "words.typos",
+            "destination_type": "queue",
+            "routing_key": "words.typos",
+            "arguments": {}
+        },
+        {
+            "source": "words",
+            "vhost": "/",
+            "destination": "words.forms",
+            "destination_type": "queue",
+            "routing_key": "words.forms",
+            "arguments": {}
+        },
+        {
+            "source": "words",
+            "vhost": "/",
+            "destination": "words.scraper",
+            "destination_type": "queue",
+            "routing_key": "words.scraper",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.microsoft",
+            "destination_type": "queue",
+            "routing_key": "format.microsoft.pptx",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.microsoft",
+            "destination_type": "queue",
+            "routing_key": "format.microsoft.docx",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.txt",
+            "destination_type": "queue",
+            "routing_key": "format.txt",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.image",
+            "destination_type": "queue",
+            "routing_key": "format.image.jpeg",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.image",
+            "destination_type": "queue",
+            "routing_key": "format.image.png",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.movie",
+            "destination_type": "queue",
+            "routing_key": "format.movie.mp4",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.movie",
+            "destination_type": "queue",
+            "routing_key": "format.movie.mov",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.archive",
+            "destination_type": "queue",
+            "routing_key": "format.archive.zip",
+            "arguments": {}
+        },
+        {
+            "source": "text",
+            "vhost": "/",
+            "destination": "text",
+            "destination_type": "queue",
+            "routing_key": "text",
+            "arguments": {}
+        },
+        {
+            "source": "result",
+            "vhost": "/",
+            "destination": "result",
+            "destination_type": "queue",
+            "routing_key": "result",
+            "arguments": {}
+        }
+    ]
+}
