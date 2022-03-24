@@ -50,7 +50,7 @@ namespace TextAnalyzer.Worker
                 using var connection = factory.CreateConnection();
                 using var channel = connection.CreateModel();
 
-                channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: "");
+                channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: queueName);
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
@@ -87,7 +87,7 @@ namespace TextAnalyzer.Worker
 
             var jsonText = receivedMessage.ToString();
             var messageBuffer = Encoding.Default.GetBytes(jsonText);
-            channel.BasicPublish(exchange: TargetExchange, routingKey: "", basicProperties: null, messageBuffer);
+            channel.BasicPublish(exchange: TargetExchange, routingKey: TargetExchange, basicProperties: null, messageBuffer);
             _logger.LogInformation(" [x] Sent {0}", jsonText);
         }
 
