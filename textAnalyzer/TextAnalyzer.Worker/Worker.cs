@@ -8,7 +8,7 @@ namespace TextAnalyzer.Worker
 {
     public class Worker : BackgroundService
     {
-        public const string TargetExchange = "result";
+        public const string targetExchange = "result";
         const string queueName = "text";
         const string exchangeName = "text";
 
@@ -87,7 +87,7 @@ namespace TextAnalyzer.Worker
 
             var jsonText = receivedMessage.ToString();
             var messageBuffer = Encoding.Default.GetBytes(jsonText);
-            channel.BasicPublish(exchange: TargetExchange, routingKey: TargetExchange, basicProperties: null, messageBuffer);
+            channel.BasicPublish(exchange: targetExchange, routingKey: targetExchange, basicProperties: null, messageBuffer);
             _logger.LogInformation(" [x] Sent {0}", jsonText);
         }
 
