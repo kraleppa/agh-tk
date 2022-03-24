@@ -2,6 +2,7 @@ version: "3.2"
 services:
   rabbitmq:
     container_name: rabbitmq
+    restart: unless-stopped
     build: ./rabbitmq
     ports:
       - 5672:5672
@@ -11,6 +12,19 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      
+  textanalyzer.worker:
+    image: ${DOCKER_REGISTRY-}textanalyzerworker
+    container_name: textanalyzer
+    build:
+      context: ./textAnalyzer/
+      dockerfile: TextAnalyzer.Worker/Dockerfile
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - WorkerSettings__Hostname=rabbitmq
+      - WorkerSettings__Port=5672
+    depends_on:
+      - rabbitmq
 
   scraper:
     container_name: scraper
