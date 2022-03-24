@@ -1,4 +1,6 @@
 import { Box, Button, Center, Heading } from "@chakra-ui/react";
+import SearchBar from "./Components/SearchBar";
+import Data from './data.json'
 
 function App() {
   return (
@@ -10,6 +12,9 @@ function App() {
         <Button colorScheme="purple" variant="solid">
           Click me!
         </Button>
+      </Center>
+      <Center>
+        <SearchBar placeholder="Enter your word..." data={Data} />
       </Center>
     </Box>
   );
