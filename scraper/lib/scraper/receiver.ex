@@ -38,7 +38,6 @@ defmodule Scraper.Receiver do
   # Sent by the broker when the consumer is unexpectedly cancelled (such as after a queue deletion)
   @impl true
   def handle_info({:basic_cancel, %{consumer_tag: consumer_tag}}, state) do
-    Logger.error("Connection lost (I guess)")
     {:stop, :normal, state}
   end
 
