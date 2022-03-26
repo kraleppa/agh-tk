@@ -31,19 +31,8 @@ defmodule Scraper.Receiver do
 
   # Confirmation sent by the broker after registering this process as a consumer
   @impl true
-  def handle_info({:basic_consume_ok, %{consumer_tag: consumer_tag}}, state) do
-    {:noreply, state}
-  end
-
-  # Sent by the broker when the consumer is unexpectedly cancelled (such as after a queue deletion)
-  @impl true
-  def handle_info({:basic_cancel, %{consumer_tag: consumer_tag}}, state) do
-    {:stop, :normal, state}
-  end
-
-  # Confirmation sent by the broker to the consumer process after a Basic.cancel
-  @impl true
-  def handle_info({:basic_cancel_ok, %{consumer_tag: consumer_tag}}, state) do
+  def handle_info({:basic_consume_ok, %{consumer_tag: _consumer_tag}}, state) do
+    Logger.info("Scraper registered properly - waiting for messages...")
     {:noreply, state}
   end
 end
