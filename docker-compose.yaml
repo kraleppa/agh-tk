@@ -31,6 +31,8 @@ services:
     build: ./scraper
     depends_on:
       - rabbitmq
+    volumes:
+      - ~/:/host
 
   frontend:
     container_name: frontend

@@ -24,6 +24,8 @@ defmodule Scraper.Receiver do
     Logger.info("Scraper received a new message #{payload}")
 
     # add logic here
+    Path.wildcard(payload)
+    |> IO.inspect()
 
     :ok = Basic.ack(channel, tag)
     {:noreply, state}
