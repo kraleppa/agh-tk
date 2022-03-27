@@ -8,7 +8,8 @@ defmodule Scraper.Application do
     opts = [strategy: :one_for_one, name: Scraper.Supervisor]
 
     children = [
-      Receiver
+      Receiver,
+      {Task.Supervisor, name: Scraper.WorkerSupervisor}
     ]
 
     Supervisor.start_link(children, opts)

@@ -28,9 +28,15 @@ defmodule Scraper.Receiver do
       path when not is_nil(path) <- Map.get(json, "path"),
       parsed_path <- parse_path(path)
     ) do
-      IO.inspect(parsed_path)
+
+      Task.Supervisor.start_child(
+        Scraper.WorkerSupervisor,
+        Scraper.Worker,
+        :run,
+        [%{path: parsed_path, json: json}]
+      )
     else
-      sth -> Logger.warn("Message ignored - wrong message format")
+      _ -> Logger.warn("Message ignored - wrong message format")
     end
 
     :ok = Basic.ack(channel, tag)
