@@ -26,6 +26,7 @@ defmodule Scraper.Receiver do
     with(
       {:ok, json} <- Poison.decode(payload),
       path when not is_nil(path) <- Map.get(json, "path"),
+      file_types when not is_nil(file_types) <- get_in(json, ["filters", "fileTypes"]),
       parsed_path <- parse_path(path)
     ) do
 
@@ -33,7 +34,7 @@ defmodule Scraper.Receiver do
         Scraper.WorkerSupervisor,
         Scraper.Worker,
         :run,
-        [%{path: parsed_path, json: json}]
+        [%{path: parsed_path, file_types: file_types, json: json}]
       )
     else
       _ -> Logger.warn("Message ignored - wrong message format")
