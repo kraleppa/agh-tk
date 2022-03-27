@@ -4,6 +4,7 @@ defmodule Scraper.Receiver do
   require Logger
 
   @queue_name Application.get_env(:scraper, :queue_name)
+  @root_directory Application.get_env(:scraper, :root_directory)
 
   def start_link(args \\ %{}) do
     GenServer.start(__MODULE__, %{})
@@ -24,7 +25,7 @@ defmodule Scraper.Receiver do
     Logger.info("Scraper received a new message #{payload}")
 
     # add logic here
-    Path.wildcard(payload)
+    Path.wildcard(@root_directory <> payload)
     |> IO.inspect()
 
     :ok = Basic.ack(channel, tag)
