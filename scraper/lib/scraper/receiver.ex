@@ -30,7 +30,6 @@ defmodule Scraper.Receiver do
       file_types when not is_nil(file_types) <- get_in(json, ["filters", "fileTypes"]),
       parsed_path <- parse_path(path)
     ) do
-
       Task.Supervisor.start_child(
         Scraper.WorkerSupervisor,
         Scraper.Worker,

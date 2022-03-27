@@ -1,3 +1,2 @@
 defmodule Scraper do
-
 end

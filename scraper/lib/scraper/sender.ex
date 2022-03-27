@@ -26,10 +26,10 @@ defmodule Scraper.Sender do
       {:ok, string_json} ->
         Basic.publish(channel, @exchange_name, key, string_json)
         Logger.info("File sent to the extractor")
-      _ -> Logger.error("Could not parse result json")
+
+      _ ->
+        Logger.error("Could not parse result json")
     end
-
-
 
     {:noreply, state}
   end
@@ -38,6 +38,7 @@ defmodule Scraper.Sender do
     case AMQP.Application.get_channel(@channel_name) do
       {:ok, channel} ->
         channel
+
       {:error, _} ->
         Logger.error("Cannot connect to channel - retrying in 5 seconds...")
         :timer.sleep(5000)

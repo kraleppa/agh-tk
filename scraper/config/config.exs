@@ -4,7 +4,6 @@ config :scraper,
   queue_name: "words.scraper",
   exchange_name: "format"
 
-
 config :amqp,
   channels: [
     receiver: [connection: :myconn],

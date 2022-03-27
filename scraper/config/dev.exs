@@ -11,6 +11,5 @@ config :amqp,
     ]
   ]
 
-
 config :scraper,
   env: :dev

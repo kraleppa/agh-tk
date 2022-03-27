@@ -20,8 +20,9 @@ defmodule Scraper.Worker do
   end
 
   defp parse_and_send(path, %{json: json}) do
-    key = Path.extname(path)
-    |> FormatParser.get_key()
+    key =
+      Path.extname(path)
+      |> FormatParser.get_key()
 
     Map.put(json, "file", path)
     |> Sender.send(key)
