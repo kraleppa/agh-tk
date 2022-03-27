@@ -9,9 +9,6 @@ config :amqp,
       username: "guest",
       password: "guest"
     ]
-  ],
-  channels: [
-    mychan: [connection: :myconn]
   ]
 
 config :scraper,

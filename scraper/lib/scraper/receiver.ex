@@ -5,6 +5,7 @@ defmodule Scraper.Receiver do
 
   @queue_name Application.get_env(:scraper, :queue_name)
   @env Application.get_env(:scraper, :env)
+  @channel_name :receiver
 
   def start_link(args \\ %{}) do
     GenServer.start(__MODULE__, %{})
@@ -52,7 +53,7 @@ defmodule Scraper.Receiver do
   end
 
   defp get_channel() do
-    case AMQP.Application.get_channel(:mychan) do
+    case AMQP.Application.get_channel(@channel_name) do
       {:ok, channel} ->
         channel
 
