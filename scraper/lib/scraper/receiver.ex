@@ -8,7 +8,7 @@ defmodule Scraper.Receiver do
   @channel_name :receiver
 
   def start_link(args \\ %{}) do
-    GenServer.start(__MODULE__, %{})
+    GenServer.start(__MODULE__, %{}, name: __MODULE__)
   end
 
   @impl true
