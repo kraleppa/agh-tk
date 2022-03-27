@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
@@ -8,8 +8,20 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
+      preload: `${__dirname}/preload.js`,
       nodeIntegration: true,
     },
+  });
+
+  ipcMain.handle("dialog:openDirectory", async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openDirectory"],
+    });
+    if (canceled) {
+      return;
+    } else {
+      return filePaths[0];
+    }
   });
 
   //load the index.html from a url
@@ -21,7 +33,7 @@ function createWindow() {
 
   // Open the DevTools.
   if (isDev) {
-    mainWindow.webContents.openDevTools({ mode: "detach" });
+    mainWindow.webContents.openDevTools();
   }
 }
 
