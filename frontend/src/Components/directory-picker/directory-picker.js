@@ -4,9 +4,9 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { AiOutlineFolderOpen } from "react-icons/ai";
 
 const DirectoryPicker = () => {
   const [directoryPath, setDirectoryPath] = useState("");
@@ -22,23 +22,28 @@ const DirectoryPicker = () => {
   };
 
   return (
-    <InputGroup>
-      <Input
-        value={directoryPath}
-        onChange={handleChange}
-        type="text"
-        pr="4.5rem"
-        placeholder="Enter directory path"
-        bg="white"
-        focusBorderColor="purple.400"
-        borderColor="purple.300"
-      />
-      <InputRightElement width="4.5rem">
-        <Button size="sm" onClick={handleClick}>
-          <Box as={AiOutlineFolderOpen} size="24px" />
-        </Button>
-      </InputRightElement>
-    </InputGroup>
+    <Box>
+      <Text color="white" mb="8px">
+        Directory
+      </Text>
+      <InputGroup flex flexDirection="column">
+        <Input
+          value={directoryPath}
+          onChange={handleChange}
+          type="text"
+          pr="4.5rem"
+          placeholder="Enter directory path"
+          bg="white"
+          focusBorderColor="purple.400"
+          borderColor="purple.300"
+        />
+        <InputRightElement width="4.5rem">
+          <Button size="sm" onClick={handleClick}>
+            Pick
+          </Button>
+        </InputRightElement>
+      </InputGroup>
+    </Box>
   );
 };
 

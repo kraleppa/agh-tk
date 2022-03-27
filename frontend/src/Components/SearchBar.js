@@ -1,22 +1,22 @@
 import React from "react";
-import { Button, Center, Input } from "@chakra-ui/react";
+import { Box, Input, InputGroup, Text } from "@chakra-ui/react";
 
-function SearchBar({ connection, clearResults }) {
-
-  const onClick = () => {
-    clearResults()
-    // todo replace hardcoded request
-    connection.sendRequest('dog', ['docx'], ['forms'])
-  }
-
+function SearchBar() {
   return (
-    <Center bg="gray.600" h="100px" color="white">
-      <Input placeholder="Enter your word..." />
-      <Button colorScheme="purple" variant="solid" onClick={onClick}>
-        Search
-      </Button>
-    </Center>
-  )
+    <Box>
+      <Text mb="8px" color="white">
+        Phrase
+      </Text>
+      <InputGroup flex flexDirection="column">
+        <Input
+          placeholder="Enter phrase"
+          bg="white"
+          focusBorderColor="purple.400"
+          borderColor="purple.300"
+        />
+      </InputGroup>
+    </Box>
+  );
 }
 
-export default SearchBar
+export default SearchBar;
