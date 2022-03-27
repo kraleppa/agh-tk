@@ -1,7 +1,6 @@
 import Config
 
 config :scraper,
-  queue_name: "words.scraper",
-  root_directory: Path.expand("~")
+  queue_name: "words.scraper"
 
 import_config "#{Mix.env()}.exs"

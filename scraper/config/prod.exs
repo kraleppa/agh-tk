@@ -15,4 +15,5 @@ config :amqp,
   ]
 
 config :scraper,
-  root_directory: "/host"
+  env: :prod,
+  root_directory: "/host/"

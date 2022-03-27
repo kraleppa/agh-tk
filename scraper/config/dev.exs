@@ -13,3 +13,6 @@ config :amqp,
   channels: [
     mychan: [connection: :myconn]
   ]
+
+config :scraper,
+  env: :dev

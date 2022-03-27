@@ -4,7 +4,7 @@ defmodule Scraper.Receiver do
   require Logger
 
   @queue_name Application.get_env(:scraper, :queue_name)
-  @root_directory Application.get_env(:scraper, :root_directory)
+  @env Application.get_env(:scraper, :env)
 
   def start_link(args \\ %{}) do
     GenServer.start(__MODULE__, %{})
@@ -12,7 +12,8 @@ defmodule Scraper.Receiver do
 
   @impl true
   def init(args) do
-    {:ok, channel} = AMQP.Application.get_channel(:mychan)
+
+    channel = get_channel()
     {:ok, _consumer_tag} = Basic.consume(channel, @queue_name)
 
 
@@ -24,9 +25,15 @@ defmodule Scraper.Receiver do
   def handle_info({:basic_deliver, payload, %{delivery_tag: tag}}, %{channel: channel} = state) do
     Logger.info("Scraper received a new message #{payload}")
 
-    # add logic here
-    Path.wildcard(@root_directory <> payload)
-    |> IO.inspect()
+    with(
+      {:ok, json} <- Poison.decode(payload),
+      path when not is_nil(path) <- Map.get(json, "path"),
+      parsed_path <- parse_path(path)
+    ) do
+      IO.inspect(parsed_path)
+    else
+      sth -> Logger.warn("Message ignored - wrong message format")
+    end
 
     :ok = Basic.ack(channel, tag)
     {:noreply, state}
@@ -38,4 +45,28 @@ defmodule Scraper.Receiver do
     Logger.info("Scraper registered properly - waiting for messages...")
     {:noreply, state}
   end
+
+  defp get_channel() do
+    case AMQP.Application.get_channel(:mychan) do
+      {:ok, channel} -> channel
+      {:error, _} ->
+        Logger.error("Cannot connect to channel - retrying in 5 seconds...")
+        :timer.sleep(5000)
+        get_channel()
+    end
+  end
+
+  defp parse_path(path) do
+    case @env do
+      :dev ->
+        Path.expand(path) <> "/**"
+      :prod ->
+        res = Path.split(path)
+        |> Enum.reject(&(&1 == "~"))
+        |> Path.join
+        Application.get_env(:scraper, :root_directory) <> res <> "/**"
+    end
+  end
+
+
 end
