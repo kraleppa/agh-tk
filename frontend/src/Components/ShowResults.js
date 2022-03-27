@@ -5,7 +5,7 @@ export default function ShowResults({ results }) {
     return (
       <Tr key={key + "_" + result.path} textColor={() => key % 2 === 0 ? colors.black : colors.white}>
         <Td textAlign="center">{result.path}</Td>
-        <Td textAlign="center">{result.found}</Td>
+        <Td textAlign="center">{result.found.toString()}</Td>
       </Tr>
     )
   })

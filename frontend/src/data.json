@@ -1,14 +1,14 @@
 [
   {
     "path": "C:/documents/aa/bb",
-    "found": "false"
+    "found": false
   },
   {
     "path": "C:/documents/bv/543",
-    "found": "true"
+    "found": true
   },
   {
     "path": "C:/documents/wqe/zxc",
-    "found": "true"
+    "found": true
   }
 ]

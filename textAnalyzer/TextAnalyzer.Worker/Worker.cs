@@ -83,7 +83,7 @@ namespace TextAnalyzer.Worker
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
-            receivedMessage["contains_word"] = contains;
+            receivedMessage["found"] = contains;
 
             var jsonText = receivedMessage.ToString();
             var messageBuffer = Encoding.Default.GetBytes(jsonText);
