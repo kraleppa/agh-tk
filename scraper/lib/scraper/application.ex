@@ -1,11 +1,19 @@
 defmodule Scraper.Application do
   use Application
-
   require Logger
 
+  alias Scraper.Receiver
+  alias Scraper.Sender
+
   def start(_type, _args) do
-    Logger.info("Hello from scraper")
     opts = [strategy: :one_for_one, name: Scraper.Supervisor]
-    Supervisor.start_link([], opts)
+
+    children = [
+      Receiver,
+      Sender,
+      {Task.Supervisor, name: Scraper.WorkerSupervisor}
+    ]
+
+    Supervisor.start_link(children, opts)
   end
 end

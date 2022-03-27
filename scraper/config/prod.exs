@@ -8,8 +8,9 @@ config :amqp,
       virtual_host: "/",
       username: "guest",
       password: "guest"
-    ],
-  ],
-  channels: [
-    mychan: [connection: :myconn]
+    ]
   ]
+
+config :scraper,
+  env: :prod,
+  root_directory: "/host/"
