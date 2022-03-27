@@ -1,19 +1,22 @@
 import React from "react";
-import "./SearchBar.css";
+import { Button, Center, Input } from "@chakra-ui/react";
 
-function SearchBar({placeholder, data}) {
-    return(
-        <div className="search">
-            <div className="searchInputs">
-                <input type="text" placeholder={placeholder} />
-            </div>
-            <div className="dataResult">
-                {data.map((value,key) => {
-                    return <div> {value.title} </div>
-                })}
-            </div>
-        </div>
-    )
+function SearchBar({ connection, clearResults }) {
+
+  const onClick = () => {
+    clearResults()
+    // todo replace hardcoded request
+    connection.sendRequest('dog', ['docx'], ['forms'])
+  }
+
+  return (
+    <Center bg="gray.600" h="100px" color="white">
+      <Input placeholder="Enter your word..." />
+      <Button colorScheme="purple" variant="solid" onClick={onClick}>
+        Search
+      </Button>
+    </Center>
+  )
 }
 
 export default SearchBar

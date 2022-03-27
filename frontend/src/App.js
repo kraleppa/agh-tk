@@ -1,23 +1,34 @@
-import { Box, Button, Center, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading } from "@chakra-ui/react";
 import SearchBar from "./Components/SearchBar";
-import Data from './data.json'
+import data from './data.json'
 import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
+import { useEffect, useState } from "react";
+import ShowResults from "./Components/ShowResults";
 
 function App() {
-  const connection = new RabbitMQConnection()
+  const [results, setResults] = useState(data)
+  const clearResults = () => setResults([])
+  const addResult = (newResult) => {
+    console.log("adding result: " + JSON.stringify(newResult))
+    setResults(oldResults => [...oldResults, newResult])
+  }
+
+  const connection = new RabbitMQConnection(addResult)
+
+  useEffect(() => {
+    console.dir(results)
+  }, [results])
+
   return (
     <Box bg="gray.600" h="100vh">
       <Center bg="purple.500" h="100px" color="white">
         <Heading>FileFinder</Heading>
       </Center>
-      <Center bg="gray.600" h="100px" color="white">
-        {/* todo replace hardcoded request */}
-        <Button colorScheme="purple" variant="solid" onClick={() => connection.sendRequest('dog', ['docx'], ['forms'])}>
-          Click me!
-        </Button>
+      <Center>
+        <SearchBar connection={connection} clearResults={clearResults} />
       </Center>
       <Center>
-        <SearchBar placeholder="Enter your word..." data={Data} />
+        <ShowResults results={results} />
       </Center>
     </Box>
   );

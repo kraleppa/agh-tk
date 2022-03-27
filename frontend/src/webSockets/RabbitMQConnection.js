@@ -1,10 +1,19 @@
 import { Stomp } from "@stomp/stompjs";
 
 export class RabbitMQConnection {
-  constructor() {
+  constructor(addResult) {
     this.client = Stomp.over(new WebSocket('ws://127.0.0.1:15674/ws'))
-    const onConnect = () => console.log('connected to ws')
-    const onError = () => console.log('error while connecting to ws')
+
+    const onMessage = (message) => {
+      addResult(JSON.parse(message.body))
+      this.client.subscribe('/queue/result', onMessage)
+    }
+    const onConnect = () => {
+      console.log('connected to ws')
+      this.client.subscribe('/queue/result', onMessage)
+    }
+    const onError = () => console.error('error while connecting to ws')
+
     this.client.reconnect_delay = 5000
     this.client.connect('guest', 'guest', onConnect, onError)
   }
