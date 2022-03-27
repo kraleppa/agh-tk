@@ -12,10 +12,8 @@ defmodule Scraper.Receiver do
 
   @impl true
   def init(args) do
-
     channel = get_channel()
     {:ok, _consumer_tag} = Basic.consume(channel, @queue_name)
-
 
     {:ok, Map.put(args, :channel, channel)}
   end
@@ -48,7 +46,9 @@ defmodule Scraper.Receiver do
 
   defp get_channel() do
     case AMQP.Application.get_channel(:mychan) do
-      {:ok, channel} -> channel
+      {:ok, channel} ->
+        channel
+
       {:error, _} ->
         Logger.error("Cannot connect to channel - retrying in 5 seconds...")
         :timer.sleep(5000)
@@ -60,13 +60,14 @@ defmodule Scraper.Receiver do
     case @env do
       :dev ->
         Path.expand(path) <> "/**"
+
       :prod ->
-        res = Path.split(path)
-        |> Enum.reject(&(&1 == "~"))
-        |> Path.join
+        res =
+          Path.split(path)
+          |> Enum.reject(&(&1 == "~"))
+          |> Path.join()
+
         Application.get_env(:scraper, :root_directory) <> res <> "/**"
     end
   end
-
-
 end
