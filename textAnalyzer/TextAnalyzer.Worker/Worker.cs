@@ -39,7 +39,7 @@ namespace TextAnalyzer.Worker
                 }
                 catch
                 {
-                    _logger.LogInformation("Waitng for queue to be reachable");
+                    _logger.LogInformation("Waiting for queue to be reachable");
                     await Task.Delay(1_000);
                 }
             }
