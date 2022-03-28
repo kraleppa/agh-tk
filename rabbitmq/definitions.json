@@ -45,7 +45,7 @@
         {
             "name": "format",
             "vhost": "/",
-            "type": "direct",
+            "type": "topic",
             "durable": true,
             "auto_delete": false,
             "internal": false,
@@ -187,15 +187,7 @@
             "vhost": "/",
             "destination": "format.microsoft",
             "destination_type": "queue",
-            "routing_key": "format.microsoft.pptx",
-            "arguments": {}
-        },
-        {
-            "source": "format",
-            "vhost": "/",
-            "destination": "format.microsoft",
-            "destination_type": "queue",
-            "routing_key": "format.microsoft.docx",
+            "routing_key": "format.microsoft.*",
             "arguments": {}
         },
         {
@@ -211,15 +203,7 @@
             "vhost": "/",
             "destination": "format.image",
             "destination_type": "queue",
-            "routing_key": "format.image.jpeg",
-            "arguments": {}
-        },
-        {
-            "source": "format",
-            "vhost": "/",
-            "destination": "format.image",
-            "destination_type": "queue",
-            "routing_key": "format.image.png",
+            "routing_key": "format.image.*",
             "arguments": {}
         },
         {
@@ -227,15 +211,7 @@
             "vhost": "/",
             "destination": "format.movie",
             "destination_type": "queue",
-            "routing_key": "format.movie.mp4",
-            "arguments": {}
-        },
-        {
-            "source": "format",
-            "vhost": "/",
-            "destination": "format.movie",
-            "destination_type": "queue",
-            "routing_key": "format.movie.mov",
+            "routing_key": "format.movie.*",
             "arguments": {}
         },
         {
@@ -243,7 +219,7 @@
             "vhost": "/",
             "destination": "format.archive",
             "destination_type": "queue",
-            "routing_key": "format.archive.zip",
+            "routing_key": "format.archive.*",
             "arguments": {}
         },
         {
