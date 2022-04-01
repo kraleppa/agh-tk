@@ -65,15 +65,6 @@
             <version>20210307</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/com.lordcodes.turtle/turtle -->
-<!--        <dependency>-->
-<!--            <groupId>com.lordcodes.turtle</groupId>-->
-<!--            <artifactId>turtle</artifactId>-->
-<!--            <version>0.6.0</version>-->
-<!--        </dependency>-->
-
-
     </dependencies>
 
     <build>
