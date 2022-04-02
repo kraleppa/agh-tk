@@ -22,18 +22,17 @@ class OcrConsumer(channelIn: Channel, private val channelOut: Channel) : Default
     ) {
         if (body != null) {
             val json = JSONObject(String(body))
-            val extractedText: String? = ocrWorker.extractText(json.getString("path"))
-            if (extractedText != null) {
-                logger.info("extracted text:\n$extractedText")
-                json.put("text", extractedText)
-                channelOut.basicPublish(
-                    Utils.EXCHANGE_NAME,
-                    Utils.ROUTING_KEY,
-                    AMQP.BasicProperties(),
-                    json.toString().toByteArray()
-                )
-                logger.info("sent response with: $json")
-            }
+            val extractedText: String = ocrWorker.extractText(json.getString("path"))
+            logger.info("extracted text:\n$extractedText")
+            json.put("text", extractedText)
+
+            channelOut.basicPublish(
+                Utils.EXCHANGE_NAME,
+                Utils.ROUTING_KEY,
+                AMQP.BasicProperties(),
+                json.toString().toByteArray()
+            )
+            logger.info("sent response with: $json")
         }
     }
 }

@@ -12,9 +12,5 @@ object Utils {
 
     const val TESS_DATA = "/home/tessdata"
 
-    @Suppress("unused")
-    enum class Lang(val value: String) {
-        ENG("eng"),
-        POL("pol")
-    }
+    val LANGUAGES: List<String> = listOf("eng", "pol")
 }
