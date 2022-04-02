@@ -2,7 +2,7 @@ version: "3.2"
 services:
   rabbitmq:
     container_name: rabbitmq
-    restart: unless-stopped
+    restart: on-failure
     build: ./rabbitmq
     ports:
       - 5672:5672
@@ -13,7 +13,7 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-      
+
   textanalyzer.worker:
     image: ${DOCKER_REGISTRY-}textanalyzerworker
     container_name: textanalyzer
@@ -48,4 +48,12 @@ services:
     depends_on:
       - rabbitmq
       - scraper
-      
+
+  ocr_service:
+    container_name: ocr_service
+    build: ./ocr_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ~/:/host
