@@ -2,7 +2,7 @@ package pl.agh.tk.ocr
 
 object Utils {
 
-    const val HOST = "host.docker.internal"
+    const val HOST = "rabbitmq"
 
     const val EXCHANGE_NAME = "text"
 
