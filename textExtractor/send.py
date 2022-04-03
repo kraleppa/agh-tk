@@ -9,6 +9,7 @@ def send(path):
     channel.exchange_declare(
         exchange = 'text',
         exchange_type = 'direct',
+        passive = True,
         durable = True
     )
 
