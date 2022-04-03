@@ -12,8 +12,7 @@ def send(path):
         passive = True,
         durable = True
     )
-
-    path = path.decode()
+    
     path = os.path.join(path)
 
     with open(path,'r') as f:
