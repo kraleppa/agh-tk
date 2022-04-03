@@ -2,6 +2,8 @@ import React from "react";
 import {
   Button,
   ButtonGroup,
+  Checkbox,
+  CheckboxGroup,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -19,8 +21,21 @@ const Form = ({ onSubmit }) => {
     reset,
     setValue,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      phrase: "",
+      directory: "",
+      synonyms: false,
+      typos: false,
+      forms: false,
+    },
+  });
+
+  const watchSynonyms = watch("synonyms", false);
+  const watchTypos = watch("typos", false);
+  const watchForms = watch("forms", false);
 
   const handleDirectorySelect = () => {
     window.api.selectFolder().then((result) => {
@@ -74,30 +89,42 @@ const Form = ({ onSubmit }) => {
             </FormErrorMessage>
             <InputRightElement width="4.5rem">
               <Button size="sm" onClick={handleDirectorySelect}>
-                Pick
+                Select
               </Button>
             </InputRightElement>
           </InputGroup>
         </FormControl>
 
-        <ButtonGroup spacing="6">
-          <Button
-            mt={4}
-            colorScheme="purple"
-            isLoading={isSubmitting}
-            type="submit"
-          >
-            Submit
-          </Button>
+        <FormControl py={0}>
+          <FormLabel>Phrase search modes</FormLabel>
+          <CheckboxGroup colorScheme="purple">
+            <Stack spacing={[2, 6]} direction={["column", "row"]}>
+              <Checkbox isChecked={watchSynonyms} {...register("synonyms")}>
+                Synonyms
+              </Checkbox>
+              <Checkbox isChecked={watchTypos} {...register("typos")}>
+                Typos
+              </Checkbox>
+              <Checkbox isChecked={watchForms} {...register("forms")}>
+                Various forms
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
+        </FormControl>
 
-          <Button
-            mt={4}
-            colorScheme="purple"
-            variant="outline"
-            onClick={() => reset()}
-          >
-            Reset form
-          </Button>
+        <ButtonGroup>
+          <Stack spacing={[2, 4]} mt={4} direction={["column", "row"]}>
+            <Button colorScheme="purple" isLoading={isSubmitting} type="submit">
+              Submit
+            </Button>
+            <Button
+              colorScheme="purple"
+              variant="outline"
+              onClick={() => reset()}
+            >
+              Reset form
+            </Button>
+          </Stack>
         </ButtonGroup>
       </Stack>
     </form>
