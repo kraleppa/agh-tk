@@ -4,7 +4,7 @@ from send import send
 connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
 channel = connection.channel()
 
-queue = channel.queue_declare('format.txt', durable = True)
+queue = channel.queue_declare('format.txt', passive=True, durable = True)
 queue_name = queue.method.queue
 
 def callback(ch, method, properties, body):
