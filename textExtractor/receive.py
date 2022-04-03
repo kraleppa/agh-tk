@@ -8,7 +8,7 @@ queue = channel.queue_declare('format.txt', passive=True, durable = True)
 queue_name = queue.method.queue
 
 def callback(ch, method, properties, body):
-    send(body)
+    send(body.decode())
 
 channel.basic_consume(on_message_callback=callback, queue=queue_name, auto_ack=True)
 
