@@ -3,7 +3,7 @@ import data from "./data.json";
 import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
 import ShowResults from "./Components/ShowResults";
-import Form from "./Components/form/Form";
+import Form from "./Components/form/form";
 
 function App() {
   const [results, setResults] = useState(data);
@@ -15,10 +15,14 @@ function App() {
 
   const connection = new RabbitMQConnection(addResult);
 
-  const onSubmit = (data) => {
-    // todo replace hardcoded request
+  const onSubmit = ({ phrase, directory }, fileFormats, searchModes) => {
     clearResults();
-    connection.sendRequest("dog", ["docx"], ["forms"]);
+    connection.sendRequest(
+      phrase,
+      directory.replace(/\\/g, "/"),
+      [...fileFormats],
+      [...searchModes]
+    );
   };
 
   useEffect(() => {

@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   ButtonGroup,
-  Checkbox,
-  CheckboxGroup,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -13,6 +11,7 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
+import MultiSelectMenu from "./multi-select-menu";
 import { useForm } from "react-hook-form";
 
 const Form = ({ onSubmit }) => {
@@ -21,26 +20,40 @@ const Form = ({ onSubmit }) => {
     reset,
     setValue,
     handleSubmit,
-    watch,
+    resetField,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       phrase: "",
       directory: "",
-      synonyms: false,
-      typos: false,
-      forms: false,
     },
   });
 
-  const watchSynonyms = watch("synonyms", false);
-  const watchTypos = watch("typos", false);
-  const watchForms = watch("forms", false);
+  const fileFormats = [
+    "pptx",
+    "docx",
+    "txt",
+    "jpeg",
+    "jpg",
+    "png",
+    "mp4",
+    "zip",
+  ];
+  const searchModes = ["synonyms", "typos", "forms"];
+
+  const [selectedFileFormats, setSelectedFileFormats] = useState([]);
+  const [selectedSearchModes, setSelectedSearchModes] = useState([]);
+
+  const resetForm = () => {
+    reset();
+    setSelectedFileFormats([]);
+    setSelectedSearchModes([]);
+  };
 
   const handleDirectorySelect = () => {
     window.api.selectFolder().then((result) => {
       if (!!result) {
-        console.log(result);
+        resetField("directory");
         setValue("directory", result);
       }
     });
@@ -53,7 +66,11 @@ const Form = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit((data) =>
+        onSubmit(data, selectedFileFormats, selectedSearchModes)
+      )}
+    >
       <Stack spacing={3}>
         <FormControl isInvalid={errors.phrase}>
           <FormLabel htmlFor="phrase">Phrase</FormLabel>
@@ -96,20 +113,23 @@ const Form = ({ onSubmit }) => {
         </FormControl>
 
         <FormControl py={0}>
+          <FormLabel>File formats</FormLabel>
+          <MultiSelectMenu
+            selectedOptions={selectedFileFormats}
+            setSelectedOptions={setSelectedFileFormats}
+            label="File formats"
+            options={[...fileFormats]}
+          />
+        </FormControl>
+
+        <FormControl py={0}>
           <FormLabel>Phrase search modes</FormLabel>
-          <CheckboxGroup colorScheme="purple">
-            <Stack spacing={[2, 6]} direction={["column", "row"]}>
-              <Checkbox isChecked={watchSynonyms} {...register("synonyms")}>
-                Synonyms
-              </Checkbox>
-              <Checkbox isChecked={watchTypos} {...register("typos")}>
-                Typos
-              </Checkbox>
-              <Checkbox isChecked={watchForms} {...register("forms")}>
-                Various forms
-              </Checkbox>
-            </Stack>
-          </CheckboxGroup>
+          <MultiSelectMenu
+            selectedOptions={selectedSearchModes}
+            setSelectedOptions={setSelectedSearchModes}
+            label="Phrase search modes"
+            options={[...searchModes]}
+          />
         </FormControl>
 
         <ButtonGroup>
@@ -120,7 +140,7 @@ const Form = ({ onSubmit }) => {
             <Button
               colorScheme="purple"
               variant="outline"
-              onClick={() => reset()}
+              onClick={() => resetForm()}
             >
               Reset form
             </Button>
