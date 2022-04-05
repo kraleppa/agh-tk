@@ -2,7 +2,7 @@ import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
 import data from "./data.json";
 import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
-import ShowResults from "./Components/ShowResults";
+import Results from "./Components/results/results";
 import Form from "./Components/form/form";
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
   }, [results]);
 
   return (
-    <Box minHeight={"100vh"} bg="gray.50">
+    <Box minHeight={"100vh"} bg="gray.50" mb="5">
       <Container
         bg="gray.50"
         minHeight={"100vh"}
@@ -43,7 +43,7 @@ function App() {
             <Heading>FileFinder</Heading>
           </Box>
           <Form onSubmit={onSubmit} />
-          <ShowResults results={results} />
+          <Results results={results} />
         </SimpleGrid>
       </Container>
     </Box>
