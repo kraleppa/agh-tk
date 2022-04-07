@@ -16,6 +16,7 @@ namespace microsoftService
     {
         private readonly IOptions<WorkerOptions> _options;
         private readonly ILogger<Worker> _logger;
+        private MicrosoftExtractor MicrosoftExtractor = new MicrosoftExtractor();
         const string queueName = "format.microsoft";
         const string targetExchange = "text";
 
@@ -64,9 +65,8 @@ namespace microsoftService
                         var rawMsg = Encoding.UTF8.GetString(ea.Body.ToArray());
                         var jsonObj = JObject.Parse(rawMsg);
                         var routingKey = ea.RoutingKey;
-                        _logger.LogInformation(" rawMSG {0}", rawMsg);
-                        _logger.LogInformation(" jsonOBJ {0}", jsonObj);
-                        _logger.LogInformation(" routing key {0}", routingKey);
+                        _logger.LogInformation(" jsonOBJ: {0}", jsonObj);
+                        _logger.LogInformation(" routing key: {0}", routingKey);
 
 
                         ExtractMessageFromMicrosoftDocument(factory, jsonObj, routingKey);
@@ -99,20 +99,17 @@ namespace microsoftService
 
         private void ExtractMessageFromMicrosoftDocument(ConnectionFactory factory, JObject jsonObj, string routingKey)
         {
-            _logger.LogInformation(" ENTERED ExtractMessageFromMicrosoftDocument");
             var receivedMessage = jsonObj.ToObject<JsonToAnalyze>();
 
-            _logger.LogInformation(" ");
-
             var extension = routingKey.Split(".");
-            _logger.LogInformation(" extension {0}", extension[extension.Length - 1]);
+            _logger.LogInformation(" extension: {0}", extension[extension.Length - 1]);
 
 
             string text = extension[^1] switch
             {
-                "xlsx" => ReadMessageFromExcel(receivedMessage.path),
-                "pptx" => ReadMessageFromPowerPoint(receivedMessage.path),
-                "docx" => ReadMessageFromWord(receivedMessage.path),
+                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.path),
+                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.path),
+                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.path),
                 _ => ThorwAndLog()
             };
 
@@ -126,110 +123,5 @@ namespace microsoftService
             }
         }
 
-
-        private string ReadMessageFromExcel(string filePath)
-        {
-            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filePath, false))
-            {
-                StringBuilder text = new StringBuilder();
-
-                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-                SharedStringTablePart sstpart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
-                SharedStringTable sst = sstpart.SharedStringTable;
-
-                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-                Worksheet sheet = worksheetPart.Worksheet;
-
-                var rows = sheet.Descendants<Row>();
-
-                foreach (Row row in rows)
-                {
-                    foreach (Cell c in row.Elements<Cell>())
-                    {
-                        if ((c.DataType != null) && (c.DataType == CellValues.SharedString))
-                        {
-                            int ssid = int.Parse(c.CellValue.Text);
-                            string str = sst.ChildElements[ssid].InnerText;
-                            text.Append(str);
-                            text.Append(Environment.NewLine);
-                        }
-                        
-                    }
-                }
-                return text.ToString();
-            }
-        }
-
-        private string ReadMessageFromWord(string filePath)
-        {
-            string text;
-
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
-            {
-                Body body = wordDoc.MainDocumentPart.Document.Body;
-                text = body.InnerText;
-                return text;
-
-            }
-        }
-
-        private string ReadMessageFromPowerPoint(string filePath)
-        {
-            string text = null;
-
-            int numberOfSlides = CountSlides(filePath);
-            for (int i = 0; i < numberOfSlides; i++)
-            {
-                string newText = GetSlideIdAndText(filePath, i);
-                text += newText;
-            }
-
-            return text;
-        }
-
-
-        public static int CountSlides(string filePath)
-        {
-            using (PresentationDocument presentationDocument = PresentationDocument.Open(filePath, false))
-            {
-                if (presentationDocument == null)
-                {
-                    throw new ArgumentNullException("presentationDocument");
-                }
-
-                int slidesCount = 0;
-
-                PresentationPart presentationPart = presentationDocument.PresentationPart;
-                if (presentationPart != null)
-                {
-                    slidesCount = presentationPart.SlideParts.Count();
-                }
-
-                return slidesCount;
-            }
-        }
-
-        public static string GetSlideIdAndText( string filePath, int index)
-        {
-            using (PresentationDocument ppt = PresentationDocument.Open(filePath, false))
-            {
-                PresentationPart part = ppt.PresentationPart;
-                OpenXmlElementList slideIds = part.Presentation.SlideIdList.ChildElements;
-
-                string relId = (slideIds[index] as SlideId).RelationshipId;
-
-                SlidePart slide = (SlidePart) part.GetPartById(relId);
-
-                StringBuilder paragraphText = new StringBuilder();
-
-                IEnumerable<A.Text> texts = slide.Slide.Descendants<A.Text>();
-                foreach (A.Text text in texts)
-                {
-                    paragraphText.Append(text.Text);
-                }
-
-                return paragraphText.ToString();
-            }
-        }
     }
 }
