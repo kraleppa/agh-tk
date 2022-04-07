@@ -18,4 +18,16 @@
     <ProjectReference Include="..\microsoftService\microsoftService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestData\TestExcel.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\TestPowerPoint.pptx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\TestWord.docx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
