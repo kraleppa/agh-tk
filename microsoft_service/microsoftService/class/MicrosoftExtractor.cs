@@ -8,7 +8,6 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 public class MicrosoftExtractor
 {
-
     public string ReadMessageFromExcel(string filePath)
     {
         using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filePath, false))
@@ -35,9 +34,9 @@ public class MicrosoftExtractor
                         text.Append(str);
                         text.Append(Environment.NewLine);
                     }
-
                 }
             }
+
             return text.ToString();
         }
     }
@@ -51,7 +50,6 @@ public class MicrosoftExtractor
             Body body = wordDoc.MainDocumentPart.Document.Body;
             text = body.InnerText;
             return text;
-
         }
     }
 
@@ -101,11 +99,12 @@ public class MicrosoftExtractor
 
             string relId = (slideIds[index] as SlideId).RelationshipId;
 
-            SlidePart slide = (SlidePart)part.GetPartById(relId);
+            SlidePart slide = (SlidePart) part.GetPartById(relId);
 
             StringBuilder paragraphText = new StringBuilder();
 
-            IEnumerable<DocumentFormat.OpenXml.Drawing.Text> texts = slide.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Text>();
+            IEnumerable<DocumentFormat.OpenXml.Drawing.Text> texts =
+                slide.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Text>();
             foreach (DocumentFormat.OpenXml.Drawing.Text text in texts)
             {
                 paragraphText.Append(text.Text);

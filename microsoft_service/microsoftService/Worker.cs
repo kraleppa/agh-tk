@@ -54,9 +54,7 @@ namespace microsoftService
             {
                 using var connection = factory.CreateConnection();
                 using var channel = connection.CreateModel();
-
                 channel.QueueDeclarePassive(queue: queueName);
-
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
@@ -67,7 +65,6 @@ namespace microsoftService
                         var routingKey = ea.RoutingKey;
                         _logger.LogInformation(" jsonOBJ: {0}", jsonObj);
                         _logger.LogInformation(" routing key: {0}", routingKey);
-
 
                         ExtractMessageFromMicrosoftDocument(factory, jsonObj, routingKey);
                     }
@@ -100,10 +97,8 @@ namespace microsoftService
         private void ExtractMessageFromMicrosoftDocument(ConnectionFactory factory, JObject jsonObj, string routingKey)
         {
             var receivedMessage = jsonObj.ToObject<JsonToAnalyze>();
-
             var extension = routingKey.Split(".");
             _logger.LogInformation(" extension: {0}", extension[extension.Length - 1]);
-
 
             string text = extension[^1] switch
             {
@@ -122,6 +117,5 @@ namespace microsoftService
                 throw new ArgumentException();
             }
         }
-
     }
 }

@@ -8,7 +8,6 @@ namespace MicrsoftExtractorsTest
     [TestClass]
     public class UnitTest1
     {
-
         public string init(string extension)
         {
             string currentDirectory, file;
@@ -24,7 +23,6 @@ namespace MicrsoftExtractorsTest
                 default:
                     file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestWord.docx");
                     return Path.GetFullPath(file);
-
             }
         }
 
@@ -42,7 +40,6 @@ namespace MicrsoftExtractorsTest
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomoœæ powerpoint");
-
         }
 
         [TestMethod]
@@ -58,7 +55,6 @@ namespace MicrsoftExtractorsTest
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomosc");
-
         }
 
         [TestMethod]
@@ -74,8 +70,6 @@ namespace MicrsoftExtractorsTest
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomosc excel\r\nTestowa wiadomosc excel\r\nTestowa wiadomosc excel\r\n");
-
         }
-
     }
 }
