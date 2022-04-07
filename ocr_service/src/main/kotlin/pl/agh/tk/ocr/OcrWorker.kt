@@ -8,14 +8,14 @@ import pl.agh.tk.ocr.Utils.TESS_DATA
 import java.io.File
 import java.io.FileNotFoundException
 
-class OcrWorker {
+class OcrWorker(tessData: String = TESS_DATA) {
 
     private val tesseract = Tesseract()
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
-        tesseract.setDatapath(TESS_DATA)
+        tesseract.setDatapath(tessData)
     }
 
     fun extractText(filePath: String): String {
