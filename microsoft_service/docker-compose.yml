@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  microsoftservice:
+    image: ${DOCKER_REGISTRY-}microsoftservice
+    build:
+      context: .
+      dockerfile: microsoftService/Dockerfile
