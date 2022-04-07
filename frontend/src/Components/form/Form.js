@@ -142,7 +142,7 @@ const Form = ({ onSubmit }) => {
               variant="outline"
               onClick={() => resetForm()}
             >
-              Reset form
+              Clear fields
             </Button>
           </Stack>
         </ButtonGroup>
