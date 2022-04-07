@@ -12,18 +12,16 @@ namespace MicrsoftExtractorsTest
         public string init(string extension)
         {
             string currentDirectory, file;
+            currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
             switch (extension)
             {
                 case "pptx":
-                    currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
                     file = System.IO.Path.Combine(currentDirectory, @"..\..\..\TestData\TestPowerPoint.pptx");
                     return Path.GetFullPath(file);
                 case "xlsx":
-                    currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
                     file = System.IO.Path.Combine(currentDirectory, @"..\..\..\TestData\TestExcel.xlsx");
                     return Path.GetFullPath(file);
                 default:
-                    currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
                     file = System.IO.Path.Combine(currentDirectory, @"..\..\..\TestData\TestWord.docx");
                     return Path.GetFullPath(file);
 
