@@ -23,7 +23,6 @@ class OcrConsumer(channelIn: Channel, private val channelOut: Channel) : Default
         if (body != null) {
             val json = JSONObject(String(body))
             val extractedText: String = ocrWorker.extractText(json.getString("path"))
-            logger.info("extracted text:\n$extractedText")
             json.put("text", extractedText)
 
             channelOut.basicPublish(
