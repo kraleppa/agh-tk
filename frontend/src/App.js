@@ -15,11 +15,11 @@ function App() {
 
   const connection = new RabbitMQConnection(addResult);
 
-  const onSubmit = ({ phrase, directory }, fileFormats, searchModes) => {
+  const onSubmit = ({ phrase, path }, fileFormats, searchModes) => {
     clearResults();
     connection.sendRequest(
       phrase,
-      directory.replace(/\\/g, "/"),
+      path.replace(/\\/g, "/"),
       [...fileFormats],
       [...searchModes]
     );

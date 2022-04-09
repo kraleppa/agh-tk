@@ -18,8 +18,8 @@ export class RabbitMQConnection {
     this.client.connect("guest", "guest", onConnect, onError);
   }
 
-  sendRequest(phrase, directory, fileTypes, searchModes) {
-    const message = createMessage(phrase, directory, fileTypes, searchModes);
+  sendRequest(phrase, path, fileTypes, searchModes) {
+    const message = createMessage(phrase, path, fileTypes, searchModes);
     this.client.send(
       "/exchange/words/words." + getQueueName(searchModes),
       {},
@@ -28,13 +28,13 @@ export class RabbitMQConnection {
   }
 }
 
-function createMessage(phrase, directory, fileTypes, searchModes) {
+function createMessage(phrase, path, fileTypes, searchModes) {
   return {
     phrase: phrase,
     path: directory,
     filters: {
-      fileTypes: fileTypes,
-      searchModes: searchModes,
+      filterTypes: fileTypes,
+      filterModes: searchModes,
     },
     words: phrase.split(' ')
   };
