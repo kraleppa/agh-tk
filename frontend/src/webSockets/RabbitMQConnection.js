@@ -33,10 +33,10 @@ function createMessage(phrase, path, fileTypes, searchModes) {
     phrase: phrase,
     path: path,
     filters: {
-      filterTypes: fileTypes,
+      fileTypes: fileTypes,
       filterModes: searchModes,
     },
-    words: [phrase],
+    words: phrase.split(' ')
   };
 }
 
