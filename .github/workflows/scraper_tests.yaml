@@ -1,0 +1,32 @@
+name: Scraper tests
+
+on:
+  push:
+    branches: 
+      - main
+
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup elixir
+      uses: actions/setup-elixir@v1
+      with:
+        elixir-version: 1.12.3
+        otp-version: 24
+        experimental-otp: true
+    - name: Install Dependencies
+      run: |
+        cd scraper
+        mix deps.get
+    - name: Run Tests
+      run: |
+        cd scraper 
+        mix test
