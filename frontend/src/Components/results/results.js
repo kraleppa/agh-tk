@@ -24,10 +24,10 @@ const Results = ({ results }) => {
       <Divider borderColor="gray.300" />
 
       {results.map((result, i) => (
-        <div key={`${result.path}-${i}`}>
+        <div key={`${result.file}-${i}`}>
           <Result
-            path={result.path}
-            fileFormat={result.path.split(".").pop()}
+            path={result.file}
+            fileFormat={result.file.split(".").pop()}
           ></Result>
           {i < results.length - 1 ? <Divider borderColor="gray.300" /> : null}
         </div>

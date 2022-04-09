@@ -36,6 +36,7 @@ function createMessage(phrase, directory, fileTypes, searchModes) {
       fileTypes: fileTypes,
       searchModes: searchModes,
     },
+    words: phrase.split(' ')
   };
 }
 
