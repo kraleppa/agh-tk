@@ -26,6 +26,7 @@ fun main(args: Array<String>) {
             connection = connectionFactory.newConnection()
         } catch (e: ConnectException) {
             logger.warn("waiting for connection")
+            Thread.sleep(10_000)
         }
     }
     val channelIn: Channel = connection.createChannel()

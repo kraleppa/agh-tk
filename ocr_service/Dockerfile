@@ -1,15 +1,12 @@
-FROM openjdk:8-jre-alpine
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/ocr_service/src
+COPY pom.xml /home/ocr_service
+COPY test_images /home/ocr_service
+RUN mvn -f /home/ocr_service/pom.xml clean package
 
-RUN apk update
-
-RUN apk add --no-cache tesseract-ocr
-
-RUN tesseract --list-langs
-RUN tesseract -v
-
-ENV LC_ALL C
-
-COPY target/ocr_service-1.0-SNAPSHOT-jar-with-dependencies.jar /home/app.jar
-COPY tessdata /home/tessdata
-COPY test1.png /home/test1.png
-CMD ["java","-jar","/home/app.jar"]
+#
+# Package stage
+#
+FROM openjdk:11-jre-slim
+COPY --from=build /home/ocr_service/target/ocr_service-1.0-SNAPSHOT-jar-with-dependencies.jar /usr/local/lib/ocr_service.jar
+ENTRYPOINT ["java","-jar","/usr/local/lib/ocr_service.jar"]

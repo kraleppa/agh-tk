@@ -11,14 +11,14 @@ internal class OcrWorkerTest {
 
     @Test
     fun extractTextFromFile1Test() {
-        val extractedText = ocrWorker.extractText(Path("./test1.png").absolutePathString())
+        val extractedText = ocrWorker.extractText(Path("./test_images/test1.png").absolutePathString())
         assertContains(extractedText, "some test text")
         assertContains(extractedText, "more text")
     }
 
     @Test
     fun extractTextFromFile2Test() {
-        val extractedText = ocrWorker.extractText(Path("./test2.png").absolutePathString())
+        val extractedText = ocrWorker.extractText(Path("./test_images/test2.png").absolutePathString())
         assertContains(extractedText, "bLuUeee")
         assertContains(extractedText, "ReD TEXXt")
         assertContains(extractedText, "YellowT ext")
