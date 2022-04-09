@@ -1,12 +1,11 @@
 import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
-import data from "./data.json";
 import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
 
 function App() {
-  const [results, setResults] = useState(data);
+  const [results, setResults] = useState([]);
   const clearResults = () => setResults([]);
   const addResult = (newResult) => {
     console.log("adding result: " + JSON.stringify(newResult));

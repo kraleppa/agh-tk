@@ -31,9 +31,9 @@ export class RabbitMQConnection {
 function createMessage(phrase, path, fileTypes, searchModes) {
   return {
     phrase: phrase,
-    path: directory,
+    path: path,
     filters: {
-      filterTypes: fileTypes,
+      fileTypes: fileTypes,
       filterModes: searchModes,
     },
     words: phrase.split(' ')
