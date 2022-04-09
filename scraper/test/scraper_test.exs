@@ -1,8 +1,7 @@
 defmodule ScraperTest do
   use ExUnit.Case
-  doctest Scraper
 
-  test "greets the world" do
-    assert Scraper.hello() == :world
+  test "test test" do
+    assert true
   end
 end

@@ -5,14 +5,19 @@ defmodule Scraper.Application do
   alias Scraper.Receiver
   alias Scraper.Sender
 
+  @env Application.get_env(:scraper, :env)
+
   def start(_type, _args) do
     opts = [strategy: :one_for_one, name: Scraper.Supervisor]
 
-    children = [
-      Receiver,
-      Sender,
-      {Task.Supervisor, name: Scraper.WorkerSupervisor}
-    ]
+    # todo this has to be changed
+    children = if @env == :test do
+      []
+    else
+      [Receiver, Sender, {Task.Supervisor, name: Scraper.WorkerSupervisor}]
+    end
+
+
 
     Supervisor.start_link(children, opts)
   end
