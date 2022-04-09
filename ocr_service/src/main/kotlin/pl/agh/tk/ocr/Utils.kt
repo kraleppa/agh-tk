@@ -10,7 +10,7 @@ object Utils {
 
     const val QUEUE_NAME = "format.image"
 
-    const val TESS_DATA = "/home/tessdata"
+    const val TESS_DATA = "/home/ocr_service/tessdata"
 
     val LANGUAGES: List<String> = listOf("eng", "pol")
 }
