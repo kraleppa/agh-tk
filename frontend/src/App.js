@@ -1,17 +1,9 @@
-import {
-  Box,
-  Button,
-  Center,
-  Container,
-  Heading,
-  SimpleGrid,
-} from "@chakra-ui/react";
-import SearchBar from "./Components/SearchBar";
+import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
 import data from "./data.json";
 import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
-import ShowResults from "./Components/ShowResults";
-import DirectoryPicker from "./Components/directory-picker/directory-picker";
+import Results from "./Components/results/results";
+import Form from "./Components/form/form";
 
 function App() {
   const [results, setResults] = useState(data);
@@ -23,10 +15,14 @@ function App() {
 
   const connection = new RabbitMQConnection(addResult);
 
-  const onClick = () => {
+  const onSubmit = ({ phrase, directory }, fileFormats, searchModes) => {
     clearResults();
-    // todo replace hardcoded request
-    connection.sendRequest("dog", ["docx"], ["forms"]);
+    connection.sendRequest(
+      phrase,
+      directory.replace(/\\/g, "/"),
+      [...fileFormats],
+      [...searchModes]
+    );
   };
 
   useEffect(() => {
@@ -34,22 +30,20 @@ function App() {
   }, [results]);
 
   return (
-    <Box bg="gray.600" h="100vh">
-      <Container maxW="container.xl">
+    <Box minHeight={"100vh"} bg="gray.50" mb="5">
+      <Container
+        bg="gray.50"
+        minHeight={"100vh"}
+        py={6}
+        px={6}
+        maxW="container.lg"
+      >
         <SimpleGrid columns={1} spacing={5}>
-          <Center bg="purple.500" h="100px" color="white">
+          <Box py={4} h="80px" color="purple.500">
             <Heading>FileFinder</Heading>
-          </Center>
-          <SearchBar connection={connection} clearResults={clearResults} />
-          <DirectoryPicker />
-          <Center>
-            <Button colorScheme="purple" variant="solid" onClick={onClick}>
-              Search
-            </Button>
-          </Center>
-          <Center>
-            <ShowResults results={results} />
-          </Center>
+          </Box>
+          <Form onSubmit={onSubmit} />
+          <Results results={results} />
         </SimpleGrid>
       </Container>
     </Box>
