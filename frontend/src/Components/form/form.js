@@ -25,19 +25,19 @@ const Form = ({ onSubmit }) => {
   } = useForm({
     defaultValues: {
       phrase: "",
-      directory: "",
+      path: "",
     },
   });
 
   const fileFormats = [
-    "pptx",
-    "docx",
-    "txt",
-    "jpeg",
-    "jpg",
-    "png",
-    "mp4",
-    "zip",
+    ".pptx",
+    ".docx",
+    ".txt",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".mp4",
+    ".zip",
   ];
   const searchModes = ["synonyms", "typos", "forms"];
 
@@ -50,11 +50,11 @@ const Form = ({ onSubmit }) => {
     setSelectedSearchModes([]);
   };
 
-  const handleDirectorySelect = () => {
+  const handlePathSelect = () => {
     window.api.selectFolder().then((result) => {
       if (!!result) {
-        resetField("directory");
-        setValue("directory", result);
+        resetField("path");
+        setValue("path", result);
       }
     });
   };
@@ -88,13 +88,13 @@ const Form = ({ onSubmit }) => {
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={errors.directory}>
-          <FormLabel htmlFor="directory">Directory</FormLabel>
+        <FormControl isInvalid={errors.path}>
+          <FormLabel htmlFor="path">Directory path</FormLabel>
           <InputGroup flex flexDirection="column">
             <Input
-              id="directory"
+              id="path"
               placeholder="Enter directory path"
-              {...register("directory", {
+              {...register("path", {
                 required: "Directory path is required",
               })}
               type="text"
@@ -102,10 +102,10 @@ const Form = ({ onSubmit }) => {
               {...inputStyles}
             />
             <FormErrorMessage>
-              {errors.directory && errors.directory.message}
+              {errors.path && errors.path.message}
             </FormErrorMessage>
             <InputRightElement width="4.5rem">
-              <Button size="sm" onClick={handleDirectorySelect}>
+              <Button size="sm" onClick={handlePathSelect}>
                 Select
               </Button>
             </InputRightElement>
