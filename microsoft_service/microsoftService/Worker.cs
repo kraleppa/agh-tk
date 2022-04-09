@@ -102,9 +102,9 @@ namespace microsoftService
 
             string text = extension[^1] switch
             {
-                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.path),
-                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.path),
-                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.path),
+                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.file),
+                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.file),
+                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.file),
                 _ => ThorwAndLog()
             };
 

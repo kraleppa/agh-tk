@@ -33,10 +33,10 @@ namespace MicrsoftExtractorsTest
             string text;
             string filePath = init("pptx");
             JsonToAnalyze analyze = new JsonToAnalyze();
-            analyze.path = filePath;
+            analyze.file = filePath;
             MicrosoftExtractor extractor = new MicrosoftExtractor();
 
-            text = extractor.ReadMessageFromPowerPoint(analyze.path);
+            text = extractor.ReadMessageFromPowerPoint(analyze.file);
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomoœæ powerpoint");
@@ -48,10 +48,10 @@ namespace MicrsoftExtractorsTest
             string text;
             string filePath = init("docx");
             JsonToAnalyze analyze = new JsonToAnalyze();
-            analyze.path = filePath;
+            analyze.file = filePath;
             MicrosoftExtractor extractor = new MicrosoftExtractor();
 
-            text = extractor.ReadMessageFromWord(analyze.path);
+            text = extractor.ReadMessageFromWord(analyze.file);
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomosc");
@@ -63,10 +63,10 @@ namespace MicrsoftExtractorsTest
             string text;
             string filePath = init("xlsx");
             JsonToAnalyze analyze = new JsonToAnalyze();
-            analyze.path = filePath;
+            analyze.file = filePath;
             MicrosoftExtractor extractor = new MicrosoftExtractor();
 
-            text = extractor.ReadMessageFromExcel(analyze.path);
+            text = extractor.ReadMessageFromExcel(analyze.file);
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomosc excel\r\nTestowa wiadomosc excel\r\nTestowa wiadomosc excel\r\n");
