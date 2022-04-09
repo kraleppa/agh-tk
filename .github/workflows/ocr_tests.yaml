@@ -4,14 +4,10 @@ on:
   push:
     branches: 
       - main
-    # paths:
-    #   - 'ocr_service/**'
 
   pull_request:
     branches: 
       - main
-    # paths:
-    #   - 'ocr_service/**'
 
 jobs:
   build:
