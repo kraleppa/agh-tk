@@ -31,7 +31,7 @@ export class RabbitMQConnection {
 function createMessage(phrase, directory, fileTypes, searchModes) {
   return {
     phrase: phrase,
-    directory: directory,
+    path: directory,
     filters: {
       fileTypes: fileTypes,
       searchModes: searchModes,

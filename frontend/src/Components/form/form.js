@@ -30,14 +30,14 @@ const Form = ({ onSubmit }) => {
   });
 
   const fileFormats = [
-    "pptx",
-    "docx",
-    "txt",
-    "jpeg",
-    "jpg",
-    "png",
-    "mp4",
-    "zip",
+    ".pptx",
+    ".docx",
+    ".txt",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".mp4",
+    ".zip",
   ];
   const searchModes = ["synonyms", "typos", "forms"];
 
