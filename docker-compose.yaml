@@ -57,3 +57,18 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+
+  microsoftservice:
+    image: ${DOCKER_REGISTRY-}microsoftservice
+    container_name: microsoft_service
+    build:
+      context: ./microsoft_service/
+      dockerfile: microsoftService/Dockerfile
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - WorkerSettings__Hostname=rabbitmq
+      - WorkerSettings__Port=5672
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ~/:/host
