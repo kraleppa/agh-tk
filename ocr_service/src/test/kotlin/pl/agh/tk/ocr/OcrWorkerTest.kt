@@ -23,4 +23,11 @@ internal class OcrWorkerTest {
         assertContains(extractedText, "ReD TEXXt")
         assertContains(extractedText, "YellowT ext")
     }
+
+    @Test
+    fun extractTextFromFile3Test() {
+        val extractedText = ocrWorker.extractText(Path("./test1.png").absolutePathString())
+        assertContains(extractedText, "some test text")
+        assertContains(extractedText, "ASDASDASDASDADASD")
+    }
 }
