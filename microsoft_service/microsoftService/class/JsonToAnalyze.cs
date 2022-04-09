@@ -2,6 +2,6 @@
 
 public class JsonToAnalyze
 {
-    public string path { get; set; }
+    public string file { get; set; }
     
 }

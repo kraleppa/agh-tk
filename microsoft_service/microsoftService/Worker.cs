@@ -1,14 +1,9 @@
 using System.Text;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Presentation;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using A = DocumentFormat.OpenXml.Drawing;
+
 
 namespace microsoftService
 {
@@ -102,9 +97,9 @@ namespace microsoftService
 
             string text = extension[^1] switch
             {
-                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.path),
-                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.path),
-                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.path),
+                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.file),
+                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.file),
+                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.file),
                 _ => ThorwAndLog()
             };
 
