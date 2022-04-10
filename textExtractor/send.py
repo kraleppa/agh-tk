@@ -1,29 +1,38 @@
 import pika
 import json
-import os
 
-def send(path):
-    connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
-    channel = connection.channel()
+class RabbitmqConfigure():
 
-    channel.exchange_declare(
-        exchange = 'text',
-        exchange_type = 'direct',
-        durable = True
-    )
+    def __init__(self, exchange, passive, exchange_type, durable):
+        """ Configure Rabbit Mq Server  """
+        self.exchange = exchange
+        self.passive = passive
+        self.exchange_type = exchange_type
+        self.durable = durable
 
-    path = path.decode()
-    path = os.path.join(path)
+class RabbitMq():
 
-    with open(path,'r') as f:
-        print(f'Received path: {path}')
-        msg = f.read()
+    def __init__(self, server, host_name):
+
+        self.server = server
+
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host_name))
+        self._channel = self._connection.channel()
+        self._channel.exchange_declare(
+            exchange=self.server.exchange,
+            passive=self.server.passive,
+            exchange_type=self.server.exchange_type,
+            durable=self.server.durable
+        )
+
+    def publish(self, message, routing_key):
+
+        self._channel.basic_publish(exchange=self.server.exchange,
+                      routing_key=routing_key,
+                      body=json.dumps(message))
+
+        print(f"Published Message: {message}")
+        self._connection.close()
 
 
-    channel.basic_publish(
-        exchange='text',
-        routing_key='text',
-        body = json.dumps(msg)
-    )
 
-    connection.close()
