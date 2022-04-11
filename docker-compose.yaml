@@ -35,6 +35,15 @@ services:
     volumes:
       - ~/:/host
 
+  text_extractor:
+    container_name: text_extractor
+    build: ./textExtractor
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ~/:/host
+
   frontend:
     container_name: frontend
     build: ./frontend
