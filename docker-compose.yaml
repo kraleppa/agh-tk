@@ -81,3 +81,12 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+
+  state_service:
+    container_name: state_service
+    build: ./state_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ~/:/host
