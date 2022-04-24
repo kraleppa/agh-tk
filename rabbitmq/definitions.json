@@ -68,6 +68,14 @@
             "auto_delete": false,
             "internal": false,
             "arguments": {}
+        },{
+            "name": "state",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
         }
     ],
     "queues": [
@@ -143,6 +151,13 @@
         },
         {
             "name": "result",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "state",
             "vhost": "/",
             "durable": true,
             "auto_delete": false,
@@ -236,6 +251,14 @@
             "destination": "result",
             "destination_type": "queue",
             "routing_key": "result",
+            "arguments": {}
+        },
+        {
+            "source": "state",
+            "vhost": "/",
+            "destination": "state",
+            "destination_type": "queue",
+            "routing_key": "state",
             "arguments": {}
         }
     ]
