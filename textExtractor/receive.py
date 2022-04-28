@@ -1,7 +1,9 @@
+import time
 import pika
 import json
 import os
 import send
+import logging
 
 class RabbitMqServerConfigure():
 
@@ -14,6 +16,7 @@ class RabbitMqServerConfigure():
         self.passive = passive
         self.durable = durable
 
+
 class RabbitmqServer():
 
     def __init__(self, server):
@@ -23,28 +26,31 @@ class RabbitmqServer():
         """
 
         self.server = server
-        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.server.host))
-        self._channel = self._connection.channel()
-        self._tem = self._channel.queue_declare(queue=self.server.queue,
-                                                passive=self.server.passive,
-                                                durable=self.server.durable)
-        print("Server started waiting for Messages ")
+        flag = 0
+        while flag == 0:
+            try:
+                self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.server.host))
+                self._channel = self._connection.channel()
+                self._channel.queue_declare(queue=self.server.queue,
+                                            passive=self.server.passive,
+                                            durable=self.server.durable)
+                logger.warning('TextExtractor: Connected to channel')
+                flag = 1
+            except:
+                logger.warning('TextExtractor: Cannot connect to channel - retrying in 5 seconds...')
+                time.sleep(5.0)
+
 
     @staticmethod
     def callback(ch,method, properties, body):
 
         message = json.loads(body)
         myfile = message['file']
-
         extracted = RabbitmqServer.extract(myfile)
         message["text"] = extracted
-        server = send.RabbitmqConfigure(
-                        exchange='text',
-                        passive=True,
-                        exchange_type='direct',
-                        durable = True)
-        rabbitmq = send.RabbitMq(server, host_name='rabbitmq')
-        rabbitmq.publish(message=message, routing_key='text')
+
+        rabbitmq = send.RabbitMq.rabbit_send(message)
+        logger.warning(f'TextExtractor: Published Message: {message}')
 
     @staticmethod
     def extract(file):
@@ -61,6 +67,9 @@ class RabbitmqServer():
         self._channel.start_consuming()
 
 if __name__ == "__main__":
+    logger = logging.getLogger('TextExtractorInfo')
+    logger.setLevel(logging.WARNING)
+
     serverconfigure = RabbitMqServerConfigure(
                                             host = 'rabbitmq',
                                             queue='format.txt',
@@ -68,4 +77,5 @@ if __name__ == "__main__":
                                             durable=True)
 
     server = RabbitmqServer(server=serverconfigure)
+    logger.warning('TextExtractor: Server started waiting for Messages')
     server.startserver()

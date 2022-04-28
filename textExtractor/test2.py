@@ -1,32 +1,17 @@
 import pika
 import json
-import os
+import pytest
 
 '''
 Testowanie:
 1. Odpal plik receive.py
-
 2. RabbitMQ -> Exchanges -> format -> Publish message ->
-Routing key : format.txt - > Payload: {"file": "test.txt", "words": "word"} -> Publish message
-3.
-4. Odpal test2.py
+Routing key : format.txt - > Payload: {"file": "test.txt", "words": "śląsk"} -> Publish message
+3. Odpal test2.py
 '''
 
-def exp(file):
-    myfile = file['file']
-    extracted = extract(myfile)
-    file["text"] = extracted
-    return file
-
-def extract(file):
-    file = os.path.join(file)
-    with open(file, 'r') as f:
-        msg = f.read()
-    return msg
-
-def test():
-    file = {"file": "test.txt", "words": "word"}
-    expected = exp(file)
+@pytest.fixture
+def receive():
     parameters = pika.ConnectionParameters('localhost')
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
@@ -39,15 +24,14 @@ def test():
         channel.basic_ack()
         connection.close()
         body = json.loads(body)
-    print('\n',body)
-    print(expected)
-    assert body == expected
-    print(type(body))
-    print(type(expected))
-    assert type(body) == type(expected)
+        return body
 
-if __name__ == "__main__":
-    test()
+def test(receive):
+    expected = {'file': 'test.txt', 'words': 'śląsk', 'text': 'Testing text extractor.\nLine 1\nLine 2'}
+    print(receive)
+    print(expected)
+    assert expected == receive
+
 
 
 
