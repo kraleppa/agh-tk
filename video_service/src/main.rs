@@ -1,6 +1,7 @@
 use std::env;
-use amiquip::{Connection, ConsumerMessage, ConsumerOptions, Publish, Result};
+use amiquip::{Channel, Connection, ConsumerMessage, ConsumerOptions, Publish, Result};
 use log::LevelFilter;
+use opencv::core::Vector;
 
 #[macro_use]
 extern crate log;
@@ -9,7 +10,6 @@ extern crate env_logger;
 mod frameExtractor;
 
 use serde_json::{Map, Value};
-
 
 fn main() -> Result<()> {
     env_logger::builder()
@@ -59,15 +59,7 @@ fn main() -> Result<()> {
                 }
 
                 let files_with_frames = result_files_with_frames.unwrap();
-                for file in files_with_frames.iter() {
-                    let mut to_send = v.clone();
-                    let mut map = Map::new();
-                    map.insert("framePath".to_string(), Value::String(file));
-                    to_send["video"] = Value::Object(map);
-                    let mut msg_to_send = to_send.to_string();
-                    info!("Sending: {}", msg_to_send);
-                    channel.basic_publish("words",Publish::new(msg_to_send.as_bytes(),"words.scraper"));
-                }
+                send_json_with_frames(&channel, &files_with_frames, &v);
 
                 consumer.ack(delivery)?;
             }
@@ -80,4 +72,17 @@ fn main() -> Result<()> {
 
     info!("Consumer loop finished");
     connection.close()
+}
+
+pub fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, value: &Value) {
+    for file in files_with_frames.iter() {
+        let mut to_send = value.clone();
+        let mut map = Map::new();
+        map.insert("framePath".to_string(), Value::String(file));
+        to_send["video"] = Value::Object(map);
+        let mut msg_to_send = to_send.to_string();
+        info!("Sending : {}", msg_to_send);
+        channel.basic_publish("words", Publish::new(msg_to_send.as_bytes(), "words.scraper"));
+    }
+
 }
