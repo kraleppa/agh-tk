@@ -90,3 +90,14 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+
+  video_service:
+    container_name: video_service
+    build: ./video_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    environment:
+      - OUTPUT_DIR=/host/data/output/
+    volumes:
+      - ~/:/host
