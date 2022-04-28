@@ -7,7 +7,7 @@ use opencv::core::Vector;
 extern crate log;
 extern crate env_logger;
 
-mod frameExtractor;
+pub mod frame_extractor;
 
 use serde_json::{Map, Value};
 
@@ -51,7 +51,7 @@ fn main() -> Result<()> {
 
                 let file = file_option.unwrap();
                 info!("file: {}", file);
-                let result_files_with_frames = frameExtractor::extract_frames(file);
+                let result_files_with_frames = frame_extractor::extract_frames(file);
                 if result_files_with_frames.is_err() {
                     error!("no frames extracted {:?}", result_files_with_frames.err());
                     consumer.ack(delivery)?;
@@ -86,3 +86,40 @@ pub fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<Strin
     }
 
 }
+
+
+
+#[cfg(test)]
+mod extractor_test{
+    use std::path::{PathBuf};
+    use crate::frame_extractor;
+
+    #[test]
+    #[should_panic]
+    fn failed_extract(){
+        let file = PathBuf::from("/non/existing/path/test.mp4");
+        let file_path = file.to_str().unwrap();
+        println!("{}", file_path);
+        let result_files_with_frames = unsafe {
+            frame_extractor::extract_frames(&file_path)
+        };
+
+        assert!(result_files_with_frames.is_err());
+    }
+
+    #[test]
+    fn extract(){
+
+        let file = PathBuf::from("/build/tests/testData/test.mp4");
+        let file_path = file.to_str().unwrap();
+        println!("{}", file_path);
+        let result_files_with_frames = unsafe {
+            frame_extractor::extract_frames(&file_path)
+        };
+        let files_with_frames = result_files_with_frames.unwrap();
+        println!("{:?}", files_with_frames);
+        assert!(!files_with_frames.is_empty());
+    }
+
+}
+
