@@ -44,6 +44,15 @@ services:
     volumes:
       - ~/:/host
 
+  words_forms:
+    container_name: words_forms
+    build: ./wordsForms
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ~/:/host
+
   frontend:
     container_name: frontend
     build: ./frontend
