@@ -13,7 +13,6 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-
   textanalyzer.worker:
     image: ${DOCKER_REGISTRY-}textanalyzerworker
     container_name: textanalyzer
@@ -91,9 +90,9 @@ services:
     volumes:
       - ~/:/host
 
-  words_synonyms:
-    container_name: words_synonyms
-    build: ./wordsSynonyms
+  words_typos:
+    container_name: words_typos
+    build: ./wordsTypos
     restart: on-failure
     depends_on:
       - rabbitmq
