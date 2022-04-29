@@ -99,3 +99,12 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+
+  archive_service:
+    container_name: archive_service
+    build: ./archive_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ~/:/host
