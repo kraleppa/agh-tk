@@ -4,7 +4,7 @@ import pytest
 
 '''
 Testowanie:
-1. Odpal plik Forms_receive.py
+1. Odpal plik wordForms_run.py
 
 2. RabbitMQ -> Exchanges -> words -> Publish message ->
 Routing key : words.forms - > Payload: 
