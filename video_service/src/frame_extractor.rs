@@ -15,7 +15,8 @@ pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
     let dir = dir_res.unwrap();
     let dir_create_res = std::fs::create_dir_all(&dir);
     if dir_create_res.is_err() {
-        warn!("Failed to create dir for output files. Err: {:?}", dir_create_res.err());
+        error!("Failed to create dir for output files. Err: {:?}", dir_create_res.err());
+        return Err("Failed to create dir for output files.".to_string());
     }
 
     info!("Extracting frames from: {}", file);
@@ -38,18 +39,18 @@ pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
     let mut files_list = Vector::<String>::new();
     while working {
         if frame_count % 100 == 0 {
-            let filename = format!("{}frame-{}.jpg",dir,frame_count);
+            let filename = format!("{}frame-{}.jpg", dir, frame_count);
             let mut params = opencv::core::Vector::new();
-            opencv::imgcodecs::imwrite(&filename,&frame, &params);
+            opencv::imgcodecs::imwrite(&filename, &frame, &params);
             files_list.push(filename.as_str());
 
-            extracted_frame_count= extracted_frame_count+1;
+            extracted_frame_count = extracted_frame_count + 1;
         }
         let next_read_res = video.read(&mut frame);
         if next_read_res.is_err() {
             return Err("Failed to read frame".to_string());
         }
-        frame_count=frame_count+1;
+        frame_count = frame_count + 1;
         working = next_read_res.unwrap();
     }
     info!("List of files with frames {:?}", files_list);

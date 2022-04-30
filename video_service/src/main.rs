@@ -26,7 +26,6 @@ fn main() -> Result<()> {
 
     let mut connection = Connection::insecure_open(&rabit_connection)?;
     let channel = connection.open_channel(None)?;
-    channel.queue_bind("format.movie", "format", "format.movie.*", Default::default())?;
 
     let consumer = channel.basic_consume("format.movie", ConsumerOptions::default())?;
 
@@ -74,7 +73,7 @@ fn main() -> Result<()> {
     connection.close()
 }
 
-pub fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, value: &Value) {
+fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, value: &Value) {
     for file in files_with_frames.iter() {
         let mut to_send = value.clone();
         let mut map = Map::new();
