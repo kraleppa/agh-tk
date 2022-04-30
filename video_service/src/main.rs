@@ -98,7 +98,6 @@ mod extractor_test{
     fn failed_extract(){
         let file = PathBuf::from("/non/existing/path/test.mp4");
         let file_path = file.to_str().unwrap();
-        println!("{}", file_path);
         let result_files_with_frames = unsafe {
             frame_extractor::extract_frames(&file_path)
         };
@@ -111,12 +110,10 @@ mod extractor_test{
 
         let file = PathBuf::from("/build/tests/testData/test.mp4");
         let file_path = file.to_str().unwrap();
-        println!("{}", file_path);
         let result_files_with_frames = unsafe {
             frame_extractor::extract_frames(&file_path)
         };
         let files_with_frames = result_files_with_frames.unwrap();
-        println!("{:?}", files_with_frames);
         assert!(!files_with_frames.is_empty());
     }
 
