@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, thread, time};
 use amiquip::{Channel, Connection, ConsumerMessage, ConsumerOptions, Publish, Result};
 use log::LevelFilter;
 use opencv::core::Vector;
@@ -24,7 +24,17 @@ fn main() -> Result<()> {
     let rabit_connection = rabit_connection_res.unwrap();
     info!("Rabbit connection: {}", rabit_connection);
 
-    let mut connection = Connection::insecure_open(&rabit_connection)?;
+    let mut connection_res = Connection::insecure_open(&rabit_connection);
+
+    let three_sec = time::Duration::from_secs(3);
+    while connection_res.is_err() {
+        info!("Trying to connect to rabbitmq");
+
+        connection_res = Connection::insecure_open(&rabit_connection);
+        thread::sleep(three_sec);
+    }
+    info!("Connected to rabbitmq");
+    let mut connection = connection_res.unwrap();
     let channel = connection.open_channel(None)?;
 
     let consumer = channel.basic_consume("format.movie", ConsumerOptions::default())?;
@@ -83,19 +93,17 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
         info!("Sending : {}", msg_to_send);
         channel.basic_publish("words", Publish::new(msg_to_send.as_bytes(), "words.scraper"));
     }
-
 }
 
 
-
 #[cfg(test)]
-mod extractor_test{
+mod extractor_test {
     use std::path::{PathBuf};
     use crate::frame_extractor;
 
     #[test]
     #[should_panic]
-    fn failed_extract(){
+    fn failed_extract() {
         let file = PathBuf::from("/non/existing/path/test.mp4");
         let file_path = file.to_str().unwrap();
         let result_files_with_frames = unsafe {
@@ -106,8 +114,7 @@ mod extractor_test{
     }
 
     #[test]
-    fn extract(){
-
+    fn extract() {
         let file = PathBuf::from("/build/tests/testData/test.mp4");
         let file_path = file.to_str().unwrap();
         let result_files_with_frames = unsafe {
@@ -116,6 +123,5 @@ mod extractor_test{
         let files_with_frames = result_files_with_frames.unwrap();
         assert!(!files_with_frames.is_empty());
     }
-
 }
 
