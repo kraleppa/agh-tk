@@ -29,9 +29,8 @@ fn main() -> Result<()> {
     let three_sec = time::Duration::from_secs(3);
     while connection_res.is_err() {
         info!("Trying to connect to rabbitmq");
-
-        connection_res = Connection::insecure_open(&rabit_connection);
         thread::sleep(three_sec);
+        connection_res = Connection::insecure_open(&rabit_connection);
     }
     info!("Connected to rabbitmq");
     let mut connection = connection_res.unwrap();
@@ -69,7 +68,6 @@ fn main() -> Result<()> {
 
                 let files_with_frames = result_files_with_frames.unwrap();
                 send_json_with_frames(&channel, &files_with_frames, &v);
-
                 consumer.ack(delivery)?;
             }
             other => {
@@ -94,7 +92,6 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
         channel.basic_publish("words", Publish::new(msg_to_send.as_bytes(), "words.scraper"));
     }
 }
-
 
 #[cfg(test)]
 mod extractor_test {
@@ -121,6 +118,7 @@ mod extractor_test {
             frame_extractor::extract_frames(&file_path)
         };
         let files_with_frames = result_files_with_frames.unwrap();
+
         assert!(!files_with_frames.is_empty());
     }
 }
