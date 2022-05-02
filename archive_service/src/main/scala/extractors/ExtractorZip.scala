@@ -6,9 +6,8 @@ import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException}
 import utils.Utils
 
 class ExtractorZip () {
-  def extractFiles(inputArchivePath: String, message : JSONObject, outputFolderRootPath: String = "/host/extracted"): Unit = {
-
-    var archiveInputStream : ZipArchiveInputStream = null
+  def extractFiles(inputArchivePath: String, message: JSONObject, outputDirectoryPathRoot: String = "/host/extracted"): Unit = {
+    var archiveInputStream: ZipArchiveInputStream = null
     try {
       archiveInputStream = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(inputArchivePath)))
     } catch {
@@ -16,7 +15,6 @@ class ExtractorZip () {
         Utils.logger.error("File provided in the message not found")
         return
     }
-
-    Common.handleExtracting(archiveInputStream, inputArchivePath, outputFolderRootPath, message)
+    Common.handleExtraction(archiveInputStream, inputArchivePath, outputDirectoryPathRoot, message)
   }
 }

@@ -4,10 +4,10 @@ import com.rabbitmq.client.{Connection, ConnectionFactory}
 import utils.Utils
 
 object ConnectionFactoryObject {
-  val connectionFactory = new ConnectionFactory()
+  val connectionFactory: ConnectionFactory = new ConnectionFactory()
   connectionFactory.setHost(Utils.HOST)
 
-  def connection (): Connection = {
+  def connection(): Connection = {
     connectionFactory.newConnection()
   }
 }

@@ -5,8 +5,8 @@ import utils.Utils
 import connection.ConnectionFactoryObject
 
 object Publisher {
-  def publish(message : String): Unit = {
-    val connection : Connection = ConnectionFactoryObject.connection()
+  def publish(message: String): Unit = {
+    val connection: Connection = ConnectionFactoryObject.connection()
     val channel: Channel = connection.createChannel()
     channel.basicPublish(Utils.PUBLISHER_EXCHANGE_NAME, Utils.PUBLISHER_ROUTING_KEY, null, message.getBytes("UTF-8"))
     channel.close()

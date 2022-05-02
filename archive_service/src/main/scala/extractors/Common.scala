@@ -10,19 +10,19 @@ import utils.Utils
 
 object Common {
 
-  def handleExtracting(inputStream : ArchiveInputStream, inputArchivePath : String, outputFolderRootPath: String, message : JSONObject): Unit = {
-    val outputFolder = createOutputDirectory(outputFolderRootPath)
+  def handleExtraction(inputStream: ArchiveInputStream, inputArchivePath: String, outputDirectoryPathRoot: String, message: JSONObject): Unit = {
+    val outputDirectory: File = createOutputDirectory(outputDirectoryPathRoot)
     try {
       var entry: ArchiveEntry = null
       while ( {
         entry = inputStream.getNextEntry
         entry != null
       }) {
-        if (outputFolder != null) {
-          copyFiles(inputStream, outputFolder, entry)
-          val archive : JSONObject = new JSONObject()
-          archive.put("filePathInVolume", createPath(outputFolder.getPath, entry.getName))
-          archive.put("filePathInArchive", createPath(inputArchivePath, entry.getName))
+        if (outputDirectory != null) {
+          extractFiles(inputStream, outputDirectory, entry)
+          val archive: JSONObject = new JSONObject()
+          archive.put("filePathInVolume", joinPaths(outputDirectory.getPath, entry.getName))
+          archive.put("filePathInArchive", joinPaths(inputArchivePath, entry.getName))
           message.put("archive", archive)
           Publisher.publish(message.toString)
         }
@@ -33,43 +33,43 @@ object Common {
     } finally if (inputStream != null) inputStream.close()
   }
 
-  private[this] def createOutputDirectory(outputFolderRootPath : String) : File = {
-    val outputFolderPath = createPath(outputFolderRootPath, getUniqueFolderPath())
-    val outputFolder = new File(outputFolderPath)
+  private[this] def createOutputDirectory(outputDirectoryPathRoot: String) : File = {
+    val outputDirectoryPath: String = joinPaths(outputDirectoryPathRoot, getUniqueDirectoryPath())
+    val outputDirectory: File = new File(outputDirectoryPath)
     try {
-      if (!outputFolder.mkdirs()) {
-        throw new IOException("Failed to create directory " + outputFolder);
+      if (!outputDirectory.mkdirs()) {
+        throw new IOException("Failed to create directory " + outputDirectory);
       }
     } catch {
       case e: IOException =>
         e.printStackTrace()
     }
-    outputFolder
+    outputDirectory
   }
 
-  private[this] def copyFiles(inputStream : ArchiveInputStream, outputFolder : File, entry : ArchiveEntry) : Unit = {
-    val filename: String = createPath(outputFolder.getPath, entry.getName)
-    val file: File = new File(filename)
-    if (entry.isDirectory) {
-      if (!file.isDirectory && !file.mkdirs()) {
-        throw new IOException("Failed to create directory " + file);
+  private[this] def extractFiles(inputStream: ArchiveInputStream, outputDirectory: File, archiveEntry: ArchiveEntry) : Unit = {
+    val extractedFilePath: String = joinPaths(outputDirectory.getPath, archiveEntry.getName)
+    val extractedFile: File = new File(extractedFilePath)
+    if (archiveEntry.isDirectory) {
+      if (!extractedFile.isDirectory && !extractedFile.mkdirs()) {
+        throw new IOException("Failed to create directory " + extractedFile);
       }
     } else {
-      val parent: File = file.getParentFile
+      val parent: File = extractedFile.getParentFile
       if (!parent.isDirectory && !parent.mkdirs()) {
         throw new IOException("Failed to create directory " + parent);
       }
-      val outputStream: OutputStream = Files.newOutputStream(file.toPath)
+      val outputStream: OutputStream = Files.newOutputStream(extractedFile.toPath)
       IOUtils.copy(inputStream, outputStream)
-      Utils.logger.info("Extracted file: " + entry.getName + " to " + filename)
+      Utils.logger.info("Extracted file: " + archiveEntry.getName + " to " + extractedFilePath)
     }
   }
 
-  private[this] def getUniqueFolderPath() : String = {
+  private[this] def getUniqueDirectoryPath(): String = {
     "archive-" + System.currentTimeMillis()
   }
 
-  private[this] def createPath(directoryPath : String, filePath : String) : String = {
+  private[this] def joinPaths(directoryPath: String, filePath: String): String = {
     directoryPath + "/" + filePath
   }
 }

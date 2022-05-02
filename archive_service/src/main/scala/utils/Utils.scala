@@ -8,5 +8,5 @@ object Utils {
   val PUBLISHER_ROUTING_KEY: String = "words.scraper"
   val HOST: String = "rabbitmq"
 
-  val logger = Logger("app")
+  val logger: Logger = Logger("app")
 }
