@@ -1,27 +1,25 @@
 package consumer
 
 import com.rabbitmq.client._
-import extractors.ExtractorService
 import org.json.JSONObject
+import connection.ConnectionFactoryObject
+import extractors.ExtractorService
 import utils.Utils
 
-class Consumer(connectionFactory : ConnectionFactory) {
+class Consumer() {
   val extractorService : ExtractorService = new ExtractorService()
 
-  def run() = {
-    connectionFactory.setHost(Utils.HOST)
-    val connection = connectionFactory.newConnection()
+  def run(): Unit = {
+    val connection : Connection = ConnectionFactoryObject.connection()
     val channel = connection.createChannel()
-    Utils.logger.info("WAITING FOR MESSAGES")
-
-    val deliverCallback: DeliverCallback = (_, delivery) => {
-      val message = new String(delivery.getBody, "UTF-8")
-      Utils.logger.info("RECEIVED MESSAGE: " + message + "'")
-      val messageJson : JSONObject = new JSONObject(new String(message))
-      Utils.logger.info("RECEIVED MESSAGE JSON: " + messageJson + "'")
-      extractorService.extractFiles(messageJson)
-    }
-
+    Utils.logger.info("APPLICATION IS RUNNING - WAITING FOR MESSAGES")
     channel.basicConsume(Utils.CONSUMER_QUEUE_NAME, true, deliverCallback, _ => {})
+  }
+
+  val deliverCallback: DeliverCallback = (_, delivery) => {
+    val message = new String(delivery.getBody, "UTF-8")
+    val messageJson : JSONObject = new JSONObject(new String(message))
+    Utils.logger.info("Received message: " + messageJson + "'")
+    extractorService.extractFiles(messageJson)
   }
 }

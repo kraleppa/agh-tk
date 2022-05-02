@@ -1,12 +1,12 @@
 package extractors
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream
-import org.apache.commons.compress.archivers.ArchiveEntry
-import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException, IOException}
+import org.json.JSONObject
+import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException}
 import utils.Utils
 
-class ExtractorZip {
-  def extractFiles(inputArchivePath: String, outputFolderRootPath: String = "/host/extracted", isTopLevel : Boolean = true): Unit = {
+class ExtractorZip () {
+  def extractFiles(inputArchivePath: String, message : JSONObject, outputFolderRootPath: String = "/host/extracted"): Unit = {
 
     var archiveInputStream : ZipArchiveInputStream = null
     try {
@@ -17,21 +17,6 @@ class ExtractorZip {
         return
     }
 
-    val outputFolder = Common.createOutputDirectory(outputFolderRootPath)
-
-    try {
-      var entry: ArchiveEntry = null
-      while ( {
-        entry = archiveInputStream.getNextEntry
-        entry != null
-      }) {
-        if (outputFolder != null) {
-          Common.copyFiles(archiveInputStream, outputFolder, entry)
-        }
-      }
-    } catch {
-      case e: IOException =>
-        e.printStackTrace()
-    } finally if (archiveInputStream != null) archiveInputStream.close()
+    Common.handleExtracting(archiveInputStream, inputArchivePath, outputFolderRootPath, message)
   }
 }

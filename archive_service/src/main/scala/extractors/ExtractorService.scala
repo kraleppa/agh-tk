@@ -10,15 +10,16 @@ class ExtractorService {
   def extractFiles(jsonMessage : JSONObject) : Unit = {
     if(jsonMessage.has("file")) {
       val filePath : String = jsonMessage.get("file").toString()
-      Utils.logger.debug("RECEIVED FILE WITH FILE PATH: " + filePath)
+      Utils.logger.info("Received message with file: " + filePath)
       val fileExtension = Paths.get(filePath).getFileName.toString.split("\\.").last
-      Utils.logger.debug("RECEIVED FILE WITH FILE EXTENSION: " + fileExtension)
-
       Utils.logger.info("Extracting archive: " + filePath)
+
       fileExtension match {
-        case "zip" => extractorZip.extractFiles(filePath)
+        case "zip" => extractorZip.extractFiles(filePath, jsonMessage)
         case _ => Utils.logger.error("Received message with incorrect file extension: " + filePath)
       }
+    } else {
+      Utils.logger.error("Received message without a file path")
     }
   }
 }
