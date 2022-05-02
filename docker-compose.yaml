@@ -91,15 +91,6 @@ services:
     volumes:
       - ~/:/host
 
-  words_synonyms:
-    container_name: words_synonyms
-    build: ./wordsSynonyms
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ~/:/host
-
   archive_service:
     container_name: archive_service
     build: ./archive_service

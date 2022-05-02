@@ -9,8 +9,4 @@ object Utils {
   val HOST: String = "rabbitmq"
 
   val logger = Logger("app")
-
-  def uniqueFolderPath() : String = {
-    "archive-" + System.currentTimeMillis()
-  }
 }

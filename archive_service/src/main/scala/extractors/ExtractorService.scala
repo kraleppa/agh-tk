@@ -14,6 +14,7 @@ class ExtractorService {
       val fileExtension = Paths.get(filePath).getFileName.toString.split("\\.").last
       Utils.logger.debug("RECEIVED FILE WITH FILE EXTENSION: " + fileExtension)
 
+      Utils.logger.info("Extracting archive: " + filePath)
       fileExtension match {
         case "zip" => extractorZip.extractFiles(filePath)
         case _ => Utils.logger.error("Received message with incorrect file extension: " + filePath)
