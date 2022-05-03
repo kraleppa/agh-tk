@@ -2,6 +2,8 @@ package consumer
 
 import com.rabbitmq.client._
 import org.json.JSONObject
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 import connection.ConnectionFactoryObject
 import extractors.ExtractorService
 import utils.Utils
@@ -10,9 +12,18 @@ class Consumer() {
   val extractorService: ExtractorService = new ExtractorService()
 
   def run(): Unit = {
-    val connection: Connection = ConnectionFactoryObject.connection()
+    var connection: Connection = null
+    while(connection == null) {
+      try {
+        connection = ConnectionFactoryObject.connection()
+      } catch {
+        case e @ (_ : IOException | _ : TimeoutException) =>
+          Utils.logger.info("Waiting for connection...")
+          Thread.sleep(10000)
+      }
+    }
     val channel = connection.createChannel()
-    Utils.logger.info("APPLICATION IS RUNNING - WAITING FOR MESSAGES")
+    Utils.logger.info("Connected - waiting for messages")
     channel.basicConsume(Utils.CONSUMER_QUEUE_NAME, true, deliverCallback, _ => {})
   }
 
