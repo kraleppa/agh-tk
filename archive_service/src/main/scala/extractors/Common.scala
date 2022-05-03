@@ -20,11 +20,24 @@ object Common {
       }) {
         if (outputDirectory != null) {
           extractFiles(inputStream, outputDirectory, entry)
-          val archive: JSONObject = new JSONObject()
-          archive.put("filePathInVolume", joinPaths(outputDirectory.getPath, entry.getName))
-          archive.put("filePathInArchive", joinPaths(inputArchivePath, entry.getName))
-          message.put("archive", archive)
-          Publisher.publish(message.toString)
+
+          val messageCopy: JSONObject = new JSONObject(message.toString)
+
+          if(messageCopy.has("archive")) {
+            val archive: JSONObject = messageCopy.getJSONObject("archive")
+            archive.remove("filePathInVolume")
+            archive.put("filePathInVolume", joinPaths(outputDirectory.getPath, entry.getName))
+            val filePathInArchive: String = archive.get("filePathInArchive").toString
+            archive.remove("filePathInArchive")
+            archive.put("filePathInArchive", joinPaths(filePathInArchive, entry.getName))
+            messageCopy.put("archive", archive)
+          } else {
+            val archive: JSONObject = new JSONObject()
+            archive.put("filePathInVolume", joinPaths(outputDirectory.getPath, entry.getName))
+            archive.put("filePathInArchive", joinPaths(inputArchivePath, entry.getName))
+            messageCopy.put("archive", archive)
+          }
+          Publisher.publish(messageCopy.toString)
         }
       }
     } catch {
