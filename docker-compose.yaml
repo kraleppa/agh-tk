@@ -99,3 +99,7 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
