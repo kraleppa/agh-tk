@@ -10,14 +10,14 @@ Testowanie:
 Routing key : words.synonyms - > Payload: 
 {
 "path": "C:/Users/Example",
-"phrase": "alamakota", 
+"phrase": ["Rycerz", "jest", "dzielny"], 
 "queueKey": "words.forms", 
 "filters": 
 {
 "filetypes": ["docs", "jpeg", "mp4"], 
 "searchModes": ["synonyms", "typos", "forms", "scraper"]
 }, 
-"words": ["długi", "Rycerz"]
+"words": []
 }
 3. Publish message
 4. Odpal Synonyms_test.py
@@ -39,7 +39,7 @@ def receive():
         return body
 
 def test(receive):
-    expected = {'path': 'C:/Users/Example', 'phrase': 'alamakota', 'queueKey': 'words.forms', 'filters': {'filetypes': ['docs', 'jpeg', 'mp4'], 'searchModes': ['synonyms', 'typos', 'forms', 'scraper']}, 'words': ['długi', 'Rycerz', 'obszerny', 'rozciągły', 'wydłużony', 'podłużny', 'podługowaty', 'feudał', 'szlachcic', 'wojownik', 'żołnierz']}
+    expected = {"path": "C:/Users/Example", "phrase": ["Rycerz", "jest", "dzielny"], "queueKey": "words.forms", "filters": {"filetypes": ["docs", "jpeg", "mp4"], "searchModes": ["synonyms", "typos", "forms", "scraper"]}, "words": ["Rycerz", "jest", "dzielny", "rycerz", "feudał", "szlachcic", "wojownik", "żołnierz", "dzielny", "mężny", "nieugięty", "nieulękły", "nieustraszony", "niezmordowany", "niezniechęcony", "niezrażony", "odważny", "odporny", "śmiały", "wytrwały", "wytrzymały"]}
     print(receive)
     print(expected)
     assert expected == receive

@@ -32,12 +32,16 @@ class RabbitmqServer():
     def callback(ch,method, properties, body):
 
         message = json.loads(body)
-        my_words = message['words']
+        my_words = []
+        for word in message['phrase']:
+            my_words.append(word)
         logger = Synonyms_receive_config.RabbitMqServerConfigure.create_logger()
-        logger.warning(f'wordsSynonyms: Message received: {my_words}')
+        logger.warning(f'wordsSynonyms: Message received: {message}')
+        logger.warning(f'wordsSynonyms: Words received: {my_words}')
 
         synonyms = RabbitmqServer.find_synonyms(my_words)
-        message['words'] = synonyms
+        for syno in synonyms:
+            message['words'].append(syno)
 
         rabbitmq = Synonyms_send_connect.RabbitMq.rabbit_send(message)
         logger.warning(f'wordsSynonyms: Published Message: {message}')
@@ -59,7 +63,7 @@ class RabbitmqServer():
                 for line in f:
                     dict_word = line.split(';')
                     if dict_word[0] == word:
-                        local_synonyms.append(dict_word[1:10])
+                        local_synonyms.append(dict_word)
             synonyms = [item for sublist in local_synonyms for item in sublist]
             local_synonyms = RabbitmqServer.words_filter(synonyms)
             for local in local_synonyms:
@@ -73,6 +77,4 @@ class RabbitmqServer():
         syn = [word.strip() for word in syn]
         syn = [syn.remove(word) if ' ' in word else word for word in syn]
         syn = [word for word in syn if word is not None]
-        if len(syn) >= 5:
-            syn = syn[0:5]
         return syn
