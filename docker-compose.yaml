@@ -99,7 +99,10 @@ services:
     depends_on:
       - rabbitmq
     environment:
-      - OUTPUT_DIR=/host/data/output/
+      - OUTPUT_DIR=/host/extracted/output/
     volumes:
       - ~/:/host
-
+    deploy:
+      resources:
+        limits:
+          memory: 512M

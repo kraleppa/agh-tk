@@ -30,9 +30,9 @@ WORKDIR /app
 
 ENV RABBIT_CONNECTION_STRING=amqp://admin:admin@rabbitmq:5672
 ENV INPUT_DIR=/data/input/
-ENV OUTPUT_DIR=/data/output/
+ENV OUTPUT_DIR=/extracted/output/
 
 VOLUME /data/input/
-VOLUME /data/output/
+VOLUME /extracted/output/
 
 ENTRYPOINT ./video_service
