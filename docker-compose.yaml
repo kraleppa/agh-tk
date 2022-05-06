@@ -13,6 +13,10 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   textanalyzer.worker:
     image: ${DOCKER_REGISTRY-}textanalyzerworker
@@ -26,6 +30,10 @@ services:
       - WorkerSettings__Port=5672
     depends_on:
       - rabbitmq
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   scraper:
     container_name: scraper
@@ -34,6 +42,10 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   text_extractor:
     container_name: text_extractor
@@ -43,6 +55,10 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   frontend:
     container_name: frontend
@@ -57,6 +73,10 @@ services:
     depends_on:
       - rabbitmq
       - scraper
+    deploy:
+      resources:
+        limits:
+          memory: 768M
 
   ocr_service:
     container_name: ocr_service
@@ -66,6 +86,10 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   microsoftservice:
     image: ${DOCKER_REGISTRY-}microsoftservice
@@ -81,6 +105,10 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   state_service:
     container_name: state_service
@@ -90,6 +118,10 @@ services:
       - rabbitmq
     volumes:
       - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 
   video_service:
