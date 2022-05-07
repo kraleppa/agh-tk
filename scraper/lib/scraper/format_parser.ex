@@ -7,7 +7,9 @@ defmodule Scraper.FormatParser do
     ".jpg" => "format.image.jpeg",
     ".png" => "format.image.png",
     ".mp4" => "format.movie.mp4",
-    ".zip" => "format.archive.zip"
+    ".zip" => "format.archive.zip",
+    ".tar" => "format.archive.tar",
+    ".gz" => "format.archive.gz"
   }
 
   def get_key(format), do: Map.get(@keys, format)
