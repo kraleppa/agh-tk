@@ -12,12 +12,6 @@ class RabbitMq():
         self._channel = self._connection.channel()
         self._content_encoding = self.server.content_encoding
         self._routing_key = self.server.routing_key
-        self._channel.exchange_declare(
-            exchange=self.server.exchange,
-            passive=self.server.passive,
-            exchange_type=self.server.exchange_type,
-            durable=self.server.durable
-        )
 
     def publish(self, message):
 
@@ -31,14 +25,11 @@ class RabbitMq():
         self._connection.close()
 
     @staticmethod
-    def rabbit_send(msg):
+    def rabbit_send(msg, routing_key):
         server = Synonyms_send_config.RabbitmqConfigure(
             host='rabbitmq',
             exchange='words',
-            passive=True,
-            exchange_type='direct',
-            durable=True,
-            routing_key='words.scraper',
+            routing_key=routing_key,
             content_encoding='utf-8'
         )
         rabbitmq = RabbitMq(server)

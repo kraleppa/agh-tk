@@ -18,13 +18,11 @@ class RabbitmqServer():
             try:
                 self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.server.host))
                 self._channel = self._connection.channel()
-                self._channel.queue_declare(queue=self.server.queue,
-                                            passive=self.server.passive,
-                                            durable=self.server.durable)
-                logger.warning('wordsSynonyms: Connected to channel')
+
+                logger.info('Connected to channel')
                 flag = 1
             except:
-                logger.warning('wordsSynonyms: Cannot connect to channel - retrying in 5 seconds...')
+                logger.warning('Cannot connect to channel - retrying in 5 seconds...')
                 time.sleep(5.0)
 
 
@@ -36,15 +34,27 @@ class RabbitmqServer():
         for word in message['phrase']:
             my_words.append(word)
         logger = Synonyms_receive_config.RabbitMqServerConfigure.create_logger()
-        logger.warning(f'wordsSynonyms: Message received: {message}')
-        logger.warning(f'wordsSynonyms: Words received: {my_words}')
+        logger.info(f'Message received: {message}')
+        logger.info(f'Words received: {my_words}')
 
         synonyms = RabbitmqServer.find_synonyms(my_words)
         for syno in synonyms:
-            message['words'].append(syno)
+            if syno not in message['words']:
+                message['words'].append(syno)
 
-        rabbitmq = Synonyms_send_connect.RabbitMq.rabbit_send(message)
-        logger.warning(f'wordsSynonyms: Published Message: {message}')
+        message["queueKey"] = message["filters"]["searchModes"][0]
+        current_search_mode = message["filters"]["searchModes"][0]
+        message["filters"]["searchModes"].\
+            append(message["filters"]["searchModes"].
+                   pop(message["filters"]["searchModes"].
+                       index(current_search_mode)))
+
+        new_search_mode = message["queueKey"]
+
+        rabbitmq = Synonyms_send_connect.RabbitMq.rabbit_send(message, new_search_mode)
+
+        logger.info(f'The Message was forwarded to: {new_search_mode}')
+        logger.info(f'Published Message: {message}')
 
     def startserver(self):
         self._channel.basic_consume(

@@ -10,25 +10,25 @@ Testowanie:
 Routing key : words.synonyms - > Payload: 
 {
 "path": "C:/Users/Example",
-"phrase": ["Rycerz", "jest", "dzielny"], 
-"queueKey": "words.forms", 
-"filters": 
+"phrase": ["Rycerz", "jest", "dzielny"],
+"queueKey": "words.synonyms",
+"filters":
 {
-"filetypes": ["docs", "jpeg", "mp4"], 
-"searchModes": ["synonyms", "typos", "forms", "scraper"]
-}, 
+"filetypes": ["docs", "jpeg", "mp4"],
+"searchModes": ["words.typos", "words.forms", "words.scraper", "words.synonyms"]
+},
 "words": []
 }
 3. Publish message
 4. Odpal Synonyms_test.py
 '''
+
 @pytest.fixture
 def receive():
     parameters = pika.ConnectionParameters('localhost')
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    channel.queue_declare(queue='words.scraper', passive=True, durable=True)
-    method_frame, header_frame, body = channel.basic_get(queue = 'words.scraper')
+    method_frame, header_frame, body = channel.basic_get(queue = 'words.typos', auto_ack=True)
     if method_frame.NAME == 'Basic.GetEmpty':
         connection.close()
         return ''
@@ -36,10 +36,17 @@ def receive():
         channel.basic_ack()
         connection.close()
         body = json.loads(body)
-        return body
+    return body
 
 def test(receive):
-    expected = {"path": "C:/Users/Example", "phrase": ["Rycerz", "jest", "dzielny"], "queueKey": "words.forms", "filters": {"filetypes": ["docs", "jpeg", "mp4"], "searchModes": ["synonyms", "typos", "forms", "scraper"]}, "words": ["Rycerz", "jest", "dzielny", "rycerz", "feudał", "szlachcic", "wojownik", "żołnierz", "dzielny", "mężny", "nieugięty", "nieulękły", "nieustraszony", "niezmordowany", "niezniechęcony", "niezrażony", "odważny", "odporny", "śmiały", "wytrwały", "wytrzymały"]}
+    expected = {"path": "C:/Users/Example", "phrase":
+        ["Rycerz", "jest", "dzielny"], "queueKey": "words.typos", "filters":
+        {"filetypes": ["docs", "jpeg", "mp4"], "searchModes":
+            ["words.forms", "scraper", "words.synonyms", "words.typos"]}, "words":
+        ["Rycerz", "jest", "dzielny", "rycerz", "feudał", "szlachcic", "wojownik", "żołnierz",
+         "dzielny", "mężny", "nieugięty", "nieulękły", "nieustraszony", "niezmordowany", "niezniechęcony",
+         "niezrażony", "odważny", "odporny", "śmiały", "wytrwały", "wytrzymały"]}
     print(receive)
     print(expected)
     assert expected == receive
+
