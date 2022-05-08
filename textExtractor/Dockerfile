@@ -1,11 +1,11 @@
 FROM python:3
 
-ADD receive.py /
-ADD send.py /
+RUN mkdir -p /textExtractor
 
-RUN pip install --upgrade pip
+WORKDIR /textExtractor
+COPY . .
+
 RUN pip install pika
 
-COPY test.txt ./
 
-CMD [ "python", "./receive.py" ]
+CMD [ "python", "textExtractor_run.py" ]
