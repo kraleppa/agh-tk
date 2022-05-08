@@ -11,6 +11,7 @@ import os
 USER_PATH = os.path.expanduser('~')
 PATH = os.getcwd()
 HOME_PATH = PATH.replace(USER_PATH, '~') + '/test-dir'
+VOLUME_PATH = HOME_PATH.replace('~', '/host')
 
 
 class TestSum(unittest.TestCase):
@@ -52,8 +53,30 @@ class TestSum(unittest.TestCase):
         res = self.wait_for_message(0.5, 5)
 
         # then
+        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.txt")
         self.assertEqual(res['text'], 'this is some random text with random words')
         self.assertEqual(res['found'], True)
+
+    def test_should_find_phrase_in_images(self):
+        # given
+        mock_request = {
+            "phrase": "some",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".png"],
+                "filterModes":[]
+            },
+            "words":["some"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+        res1 = self.wait_for_message(0.5, 5)
+        res2 = self.wait_for_message(0.5, 5)
+
+        # then
+        self.assertSetEqual({res1['file'], res2['file']}, {f"{VOLUME_PATH}/test2.png", f"{VOLUME_PATH}/some-photos/test1.png"})
+        self.assertSetEqual({res1['found'], res2['found']}, {True, False})
 
 
 if __name__ == '__main__':
