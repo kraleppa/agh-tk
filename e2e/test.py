@@ -78,6 +78,28 @@ class TestSum(unittest.TestCase):
         self.assertSetEqual({res1['file'], res2['file']}, {f"{VOLUME_PATH}/test2.png", f"{VOLUME_PATH}/some-photos/test1.png"})
         self.assertSetEqual({res1['found'], res2['found']}, {True, False})
 
+    def test_should_find_phrase_in_docx(self):
+        # given
+        mock_request = {
+            "phrase": "some",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".docx"],
+                "filterModes":[]
+            },
+            "words":["some"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+        res = self.wait_for_message(0.5, 5)
+        print(res)
+
+        # then
+        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.docx")
+        self.assertEqual(res['found'], True)
+
+
 
 if __name__ == '__main__':
     unittest.main()
