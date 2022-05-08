@@ -16,16 +16,16 @@ const Result = ({ path, fileFormat, fileState }) => {
   const parseFileState = (fileState) => {
     if (!fileState) {
       return "";
-    } else if (fileState.textFound != null) {
-      if (!!fileState.textFound) {
-        return "Text found";
+    } else if (fileState.phraseFound != null) {
+      if (!!fileState.phraseFound) {
+        return "Phrase found";
       } else {
-        return "Text not found";
+        return "Phrase not found";
       }
     } else if (!!fileState.fileFound) {
       return "Processing...";
     } else {
-      return "Text not found";
+      return "Phrase not found";
     }
   };
 

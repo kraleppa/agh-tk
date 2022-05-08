@@ -14,7 +14,7 @@ function App() {
     const resultParsed = {
       originalFile: "",
       fileState: {
-        textFound: newResult.found,
+        phraseFound: newResult.found,
         fileFound: newResult.fileState?.fileFound,
       },
     };
