@@ -9,9 +9,14 @@ const Results = ({ results }) => {
       </Heading>
 
       <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={11}>
+        <GridItem colSpan={8}>
           <Box py="4">
-            <Heading size="sm">Path</Heading>
+            <Heading size="sm">File path</Heading>
+          </Box>
+        </GridItem>
+        <GridItem colSpan={3}>
+          <Box py="4">
+            <Heading size="sm">File state</Heading>
           </Box>
         </GridItem>
         <GridItem colSpan={1}>
@@ -23,15 +28,20 @@ const Results = ({ results }) => {
 
       <Divider borderColor="gray.300" />
 
-      {results.map((result, i) => (
-        <div key={`${result.file}-${i}`}>
-          <Result
-            path={result.file}
-            fileFormat={result.file.split(".").pop()}
-          ></Result>
-          {i < results.length - 1 ? <Divider borderColor="gray.300" /> : null}
-        </div>
-      ))}
+      {!!results
+        ? results.map((result, i) => (
+            <div key={`${result.originalFile}-${i}`}>
+              <Result
+                path={result.originalFile}
+                fileFormat={result.originalFile.split(".").pop()}
+                fileState={result.fileState}
+              ></Result>
+              {i < results.length - 1 ? (
+                <Divider borderColor="gray.300" />
+              ) : null}
+            </div>
+          ))
+        : null}
     </Box>
   );
 };

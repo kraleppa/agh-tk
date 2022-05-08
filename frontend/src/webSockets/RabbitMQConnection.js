@@ -23,12 +23,10 @@ export class RabbitMQConnection {
     const message = createMessage(phrase, path, fileTypes, searchModes);
     const destination = "/exchange/words/words." + searchModes[0];
     const stringMessage = JSON.stringify(message);
-    console.log("Sending message to " + destination + "\n" + "Message: " + stringMessage);
-    this.client.send(
-      destination,
-      {},
-      stringMessage
+    console.log(
+      "Sending message to " + destination + "\n" + "Message: " + stringMessage
     );
+    this.client.send(destination, {}, stringMessage);
   }
 }
 
@@ -40,6 +38,6 @@ function createMessage(phrase, path, fileTypes, searchModes) {
       fileTypes: fileTypes,
       searchModes: searchModes,
     },
-    words: phrase.split(' ')
+    words: phrase.split(" "),
   };
 }
