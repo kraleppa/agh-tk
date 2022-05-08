@@ -85,7 +85,7 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
     for file in files_with_frames.iter() {
         let mut to_send = value.clone();
         let mut map = Map::new();
-        map.insert("framePath".to_string(), Value::String(file));
+        map.insert("filePathInVolume".to_string(), Value::String(file));
         to_send["video"] = Value::Object(map);
         let mut msg_to_send = to_send.to_string();
         info!("Sending : {}", msg_to_send);

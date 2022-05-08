@@ -14,7 +14,6 @@ import static pl.agh.tk.state.Utils.ARCHIVE_KEY;
 import static pl.agh.tk.state.Utils.FRAME_PATH_KEY;
 import static pl.agh.tk.state.Utils.PATH_IN_VOLUME_KEY;
 import static pl.agh.tk.state.Utils.VIDEO_KEY;
-import static pl.agh.tk.state.Utils.getValidPath;
 
 public class StateConsumer extends DefaultConsumer {
 
@@ -42,7 +41,7 @@ public class StateConsumer extends DefaultConsumer {
             JSONObject prop = (JSONObject) json.get(propKey);
             String path = prop.getString(valueKey);
             logger.info("Trying to delete file '{}'", path);
-            fileRemover.deleteFile(getValidPath(path));
+            fileRemover.deleteFile(path);
         }
     }
 }
