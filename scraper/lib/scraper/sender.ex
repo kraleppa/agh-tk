@@ -5,8 +5,9 @@ defmodule Scraper.Sender do
 
   @channel_name :sender
   @exchange_name Application.get_env(:scraper, :exchange_name)
+  @info_exchange Application.get_env(:scraper, :info_exchange)
 
-  def start_link(args \\ %{}) do
+  def start_link(_args \\ %{}) do
     GenServer.start(__MODULE__, %{}, name: __MODULE__)
   end
 
@@ -22,14 +23,19 @@ defmodule Scraper.Sender do
 
   @impl true
   def handle_cast({:send, json, key}, %{channel: channel} = state) do
-    case Poison.encode(json) do
-      {:ok, string_json} ->
-        Basic.publish(channel, @exchange_name, key, string_json)
-        Logger.info("File sent to the extractor")
+    Map.put(json, "fileState", %{"fileFound" => true})
+      |> Poison.encode()
+      |> case do
+        {:ok, string_json} ->
+          Basic.publish(channel, @exchange_name, key, string_json)
+          Logger.info("File sent to the extractor")
 
-      _ ->
-        Logger.error("Could not parse result json")
-    end
+          Basic.publish(channel, @info_exchange, "result", string_json)
+          Logger.info("Info sent to result exchange")
+
+        _ ->
+          Logger.error("Could not parse result json")
+      end
 
     {:noreply, state}
   end

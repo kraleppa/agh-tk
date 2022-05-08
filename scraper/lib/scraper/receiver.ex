@@ -3,6 +3,10 @@ defmodule Scraper.Receiver do
   use AMQP
   require Logger
 
+  alias Scraper.WorkerSupervisor
+  alias Scraper.Worker
+  alias Scraper.Forwarder
+
   @queue_name Application.get_env(:scraper, :queue_name)
   @env Application.get_env(:scraper, :env)
   @channel_name :receiver
@@ -26,16 +30,20 @@ defmodule Scraper.Receiver do
 
     with(
       {:ok, json} <- Poison.decode(payload),
+      video <- Map.get(json, "video"),
+      archive <- Map.get(json, "archive"),
       path when not is_nil(path) <- Map.get(json, "path"),
       file_types when not is_nil(file_types) <- get_in(json, ["filters", "fileTypes"]),
       parsed_path <- parse_path(path)
     ) do
-      Task.Supervisor.start_child(
-        Scraper.WorkerSupervisor,
-        Scraper.Worker,
-        :run,
-        [%{path: parsed_path, file_types: file_types, json: json}]
-      )
+      cond do
+        not is_nil(video) ->
+          Task.Supervisor.start_child(WorkerSupervisor, Forwarder, :run, [%{archive_or_video: video, json: json}])
+        not is_nil(archive) ->
+          Task.Supervisor.start_child(WorkerSupervisor, Forwarder, :run, [%{archive_or_video: archive, json: json}])
+        true ->
+          Task.Supervisor.start_child(WorkerSupervisor, Worker, :run, [%{path: parsed_path, file_types: file_types, json: json}])
+      end
     else
       _ -> Logger.warn("Message ignored - wrong message format")
     end
