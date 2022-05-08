@@ -122,3 +122,18 @@ services:
       resources:
         limits:
           memory: 512M
+
+  video_service:
+    container_name: video_service
+    build: ./video_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    environment:
+      - OUTPUT_DIR=/host/extracted/output/
+    volumes:
+      - ~/:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
