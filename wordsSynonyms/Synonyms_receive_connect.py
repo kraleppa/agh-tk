@@ -30,9 +30,7 @@ class RabbitmqServer():
     def callback(ch,method, properties, body):
 
         message = json.loads(body)
-        my_words = []
-        for word in message['phrase']:
-            my_words.append(word)
+        my_words = message['phrase'].split()
         logger = Synonyms_receive_config.RabbitMqServerConfigure.create_logger()
         logger.info(f'Message received: {message}')
         logger.info(f'Words received: {my_words}')
@@ -42,16 +40,13 @@ class RabbitmqServer():
             if syno not in message['words']:
                 message['words'].append(syno)
 
-        message["queueKey"] = message["filters"]["searchModes"][0]
-        current_search_mode = message["filters"]["searchModes"][0]
-        message["filters"]["searchModes"].\
-            append(message["filters"]["searchModes"].
-                   pop(message["filters"]["searchModes"].
-                       index(current_search_mode)))
+        queueKey = message["filters"]["searchModes"][0]
+        message["filters"]["searchModes"].pop(0)
+        message["filters"]["searchModes"].append(queueKey)
 
-        new_search_mode = message["queueKey"]
+        new_search_mode = "words." + message["filters"]["searchModes"][0]
 
-        rabbitmq = Synonyms_send_connect.RabbitMq.rabbit_send(message, new_search_mode)
+        Synonyms_send_connect.RabbitMq.rabbit_send(message, new_search_mode)
 
         logger.info(f'The Message was forwarded to: {new_search_mode}')
         logger.info(f'Published Message: {message}')

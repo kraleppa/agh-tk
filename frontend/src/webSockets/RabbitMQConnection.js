@@ -19,11 +19,15 @@ export class RabbitMQConnection {
   }
 
   sendRequest(phrase, path, fileTypes, searchModes) {
+    searchModes.push("scraper");
     const message = createMessage(phrase, path, fileTypes, searchModes);
+    const destination = "/exchange/words/words." + searchModes[0];
+    const stringMessage = JSON.stringify(message);
+    console.log("Sending message to " + destination + "\n" + "Message: " + stringMessage);
     this.client.send(
-      "/exchange/words/words." + getQueueName(searchModes),
+      destination,
       {},
-      JSON.stringify(message)
+      stringMessage
     );
   }
 }
@@ -34,12 +38,8 @@ function createMessage(phrase, path, fileTypes, searchModes) {
     path: path,
     filters: {
       fileTypes: fileTypes,
-      filterModes: searchModes,
+      searchModes: searchModes,
     },
     words: phrase.split(' ')
   };
-}
-
-function getQueueName(searchModes) {
-  return searchModes.length > 0 ? searchModes[0] : "scraper";
 }
