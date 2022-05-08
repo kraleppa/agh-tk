@@ -25,6 +25,6 @@ defmodule Scraper.Worker do
       |> FormatParser.get_key()
 
     Map.put(json, "file", path)
-    |> Sender.send(key)
+      |> Sender.send(key)
   end
 end

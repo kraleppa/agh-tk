@@ -15,7 +15,7 @@ public final class Utils {
 
     public static final String VIDEO_KEY = "video";
 
-    public static final String FRAME_PATH_KEY = "framePath";
+    public static final String FRAME_PATH_KEY = "filePathInVolume";
 
     public static final String ARCHIVE_KEY = "archive";
 
@@ -32,10 +32,5 @@ public final class Utils {
         }
         parts.remove(parts.size() - 1);
         return String.join("/", parts);
-    }
-
-    public static String getValidPath(String path) {
-        String userDirectoryPath = FileUtils.getUserDirectoryPath().replace("\\", "/");
-        return path.replaceFirst("/host", userDirectoryPath);
     }
 }

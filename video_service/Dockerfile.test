@@ -1,0 +1,27 @@
+
+FROM rust:1.57.0-bullseye as init
+
+ARG OPENCV_VERSION=4.5.1
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update
+RUN apt install -y python3-opencv
+RUN apt install -y clang libclang-dev
+RUN apt -y install "libopencv-dev=${OPENCV_VERSION}*"
+
+FROM init as build
+
+WORKDIR /build
+
+COPY src/emtpy.rs src/main.rs
+COPY Cargo.toml Cargo.toml
+
+RUN cargo build
+
+FROM build as final
+
+ENV OUTPUT_DIR=/data/output/
+VOLUME /build/src/
+VOLUME /build/tests/
+VOLUME /data/output/
+
+ENTRYPOINT cargo test

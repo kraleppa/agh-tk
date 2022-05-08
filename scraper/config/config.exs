@@ -2,7 +2,8 @@ import Config
 
 config :scraper,
   queue_name: "words.scraper",
-  exchange_name: "format"
+  exchange_name: "format",
+  info_exchange: "result"
 
 config :amqp,
   channels: [
