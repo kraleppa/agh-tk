@@ -14,7 +14,7 @@ HOME_PATH = PATH.replace(USER_PATH, '~') + '/test-dir'
 VOLUME_PATH = HOME_PATH.replace('~', '/host')
 
 
-class TestSum(unittest.TestCase):
+class E2ETests(unittest.TestCase):
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName)
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
