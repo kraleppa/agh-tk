@@ -122,7 +122,7 @@ services:
         limits:
           memory: 512M
 
-   archive_service:
+  archive_service:
     container_name: archive_service
     build: ./archive_service
     restart: on-failure
@@ -149,7 +149,7 @@ services:
       resources:
         limits:
           memory: 512M
-          
+
   words_typos:
     container_name: words_typos
     build: ./wordsTypos
@@ -163,7 +163,7 @@ services:
         limits:
           memory: 512M
 
-   words_forms:
+  words_forms:
     container_name: words_forms
     build: ./wordsForms
     restart: on-failure
@@ -187,4 +187,4 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M 
+          memory: 512M
