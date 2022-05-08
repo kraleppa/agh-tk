@@ -254,11 +254,11 @@
             "arguments": {}
         },
         {
-            "source": "state",
+            "source": "result",
             "vhost": "/",
             "destination": "state",
             "destination_type": "queue",
-            "routing_key": "state",
+            "routing_key": "result",
             "arguments": {}
         }
     ]

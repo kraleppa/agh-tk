@@ -123,7 +123,6 @@ services:
         limits:
           memory: 512M
 
-
   video_service:
     container_name: video_service
     build: ./video_service
