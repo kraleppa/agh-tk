@@ -93,10 +93,49 @@ class TestSum(unittest.TestCase):
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
         res = self.wait_for_message(0.5, 5)
-        print(res)
 
         # then
         self.assertEqual(res['file'], f"{VOLUME_PATH}/test.docx")
+        self.assertEqual(res['found'], True)
+
+    def test_should_find_phrase_in_pptx_title(self):
+        # given
+        mock_request = {
+            "phrase": "cool",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".pptx"],
+                "filterModes":[]
+            },
+            "words":["cool"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+        res = self.wait_for_message(0.5, 5)
+
+        # then
+        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.pptx")
+        self.assertEqual(res['found'], True)
+
+    def test_should_find_phrase_in_pptx_body(self):
+        # given
+        mock_request = {
+            "phrase": "marynarzem",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".pptx"],
+                "filterModes":[]
+            },
+            "words":["marynarzem"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+        res = self.wait_for_message(0.5, 5)
+
+        # then
+        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.pptx")
         self.assertEqual(res['found'], True)
 
 
