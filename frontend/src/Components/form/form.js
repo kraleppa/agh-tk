@@ -38,6 +38,8 @@ const Form = ({ onSubmit }) => {
     ".png",
     ".mp4",
     ".zip",
+    ".tar",
+    ".gz",
   ];
   const searchModes = ["synonyms", "typos", "forms"];
 

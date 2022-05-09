@@ -3,19 +3,43 @@ import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
+import { isArchivePath } from "./utils";
 
 function App() {
   const [results, setResults] = useState([]);
-  const clearResults = () => setResults([]);
+
   const addResult = (newResult) => {
-    console.log("adding result: " + JSON.stringify(newResult));
-    setResults((oldResults) => [...oldResults, newResult]);
+    console.log("NEW RESULT: ", newResult);
+
+    const resultParsed = {
+      originalFile: "",
+      fileState: {
+        phraseFound: newResult.found,
+        fileFound: newResult.fileState?.fileFound,
+      },
+    };
+    if (!!newResult.video) {
+      resultParsed.originalFile = newResult.originalFile;
+    } else if (!!newResult.archive) {
+      resultParsed.originalFile = newResult.archive.filePathInArchive;
+    } else {
+      resultParsed.originalFile = newResult.file;
+    }
+
+    if (!isArchivePath(resultParsed.originalFile)) {
+      setResults((oldResults) => [
+        ...oldResults.filter(
+          (x) => x.originalFile !== resultParsed.originalFile
+        ),
+        resultParsed,
+      ]);
+    }
   };
 
   const connection = new RabbitMQConnection(addResult);
 
   const onSubmit = ({ phrase, path }, fileFormats, searchModes) => {
-    clearResults();
+    setResults([]);
     connection.sendRequest(
       phrase,
       path.replace(/\\/g, "/"),
@@ -29,7 +53,7 @@ function App() {
   }, [results]);
 
   return (
-    <Box minHeight={"100vh"} bg="gray.50" mb="5">
+    <Box minHeight={"100vh"} bg="gray.50">
       <Container
         bg="gray.50"
         minHeight={"100vh"}
