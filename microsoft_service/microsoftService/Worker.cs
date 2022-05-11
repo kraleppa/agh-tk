@@ -95,11 +95,12 @@ namespace microsoftService
             var extension = routingKey.Split(".");
             _logger.LogInformation(" extension: {0}", extension[extension.Length - 1]);
 
+            using var fileStream = File.OpenRead(receivedMessage.file);
             string text = extension[^1] switch
             {
-                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.file),
-                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.file),
-                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.file),
+                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(fileStream),
+                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(fileStream),
+                "docx" => MicrosoftExtractor.ReadMessageFromWord(fileStream),
                 _ => ThorwAndLog()
             };
 
