@@ -18,10 +18,10 @@ namespace MicrsoftExtractorsTest
                     file = System.IO.Path.Combine(currentDirectory, @"./TestData/TestPowerPoint.pptx");
                     return Path.GetFullPath(file);
                 case "xlsx":
-                    file = System.IO.Path.Combine(currentDirectory, @"/TestData/TestExcel.xlsx");
+                    file = System.IO.Path.Combine(currentDirectory, @"./TestData/TestExcel.xlsx");
                     return Path.GetFullPath(file);
                 default:
-                    file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestWord.docx");
+                    file = System.IO.Path.Combine(currentDirectory, @"./TestData/TestWord.docx");
                     return Path.GetFullPath(file);
             }
         }
