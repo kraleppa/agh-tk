@@ -10,12 +10,12 @@ Testowanie:
 Routing key : words.synonyms - > Payload: 
 {
 "path": "C:/Users/Example",
-"phrase": ["Rycerz", "jest", "dzielny"],
+"phrase": "Rycerz jest dzielny",
 "queueKey": "words.synonyms",
 "filters":
 {
 "filetypes": ["docs", "jpeg", "mp4"],
-"searchModes": ["words.typos", "words.forms", "words.scraper", "words.synonyms"]
+"searchModes": ["typos", "forms", "scraper", "synonyms"]
 },
 "words": []
 }

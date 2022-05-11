@@ -1,6 +1,6 @@
 import pika
 import json
-import Synonyms_send_config
+from wordsServices_textExtractor_config import send_config
 
 class RabbitMq():
 
@@ -25,10 +25,10 @@ class RabbitMq():
         self._connection.close()
 
     @staticmethod
-    def rabbit_send(msg, routing_key):
-        server = Synonyms_send_config.RabbitmqConfigure(
-            host='rabbitmq',
-            exchange='words',
+    def rabbit_send(msg, host, routing_key, exchange):
+        server = send_config.RabbitmqConfigure(
+            host=host,
+            exchange=exchange,
             routing_key=routing_key,
             content_encoding='utf-8'
         )
