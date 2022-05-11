@@ -15,11 +15,10 @@ namespace MicrsoftExtractorsTest
             switch (extension)
             {
                 case "pptx":
-                    file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestPowerPoint.pptx");
-                    Console.Write(file);
+                    file = System.IO.Path.Combine(currentDirectory, @"./TestData/TestPowerPoint.pptx");
                     return Path.GetFullPath(file);
                 case "xlsx":
-                    file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestExcel.xlsx");
+                    file = System.IO.Path.Combine(currentDirectory, @"/TestData/TestExcel.xlsx");
                     return Path.GetFullPath(file);
                 default:
                     file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestWord.docx");
