@@ -16,6 +16,7 @@ namespace MicrsoftExtractorsTest
             {
                 case "pptx":
                     file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestPowerPoint.pptx");
+                    Console.Write(file)
                     return Path.GetFullPath(file);
                 case "xlsx":
                     file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestExcel.xlsx");
@@ -39,7 +40,7 @@ namespace MicrsoftExtractorsTest
             text = extractor.ReadMessageFromPowerPoint(analyze.file);
 
             Assert.IsNotNull(text);
-            Assert.AreEqual(text, "Testowa wiadomoœæ powerpoint");
+            Assert.AreEqual(text, "Testowa wiadomoï¿½ï¿½ powerpoint");
         }
 
         [TestMethod]
