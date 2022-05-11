@@ -21,7 +21,11 @@ jobs:
       run: |
         cd microsoft_service
         dotnet restore
-    - name: Build & Test
+    - name: Build
+      run: |
+        cd microsoft_service
+        dotnet build --no-restore
+    - name: Test
       run: |
         cd microsoft_service      
-        dotnet test --verbosity normal
+        dotnet test --no-build --verbosity normal
