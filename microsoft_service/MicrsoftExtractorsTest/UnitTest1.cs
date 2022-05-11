@@ -16,7 +16,7 @@ namespace MicrsoftExtractorsTest
             {
                 case "pptx":
                     file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestPowerPoint.pptx");
-                    Console.Write(file)
+                    Console.Write(file);
                     return Path.GetFullPath(file);
                 case "xlsx":
                     file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestExcel.xlsx");
