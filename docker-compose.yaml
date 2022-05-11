@@ -178,7 +178,9 @@ services:
 #
   words_synonyms:
     container_name: words_synonyms
-    build: ./wordsSynonyms
+    build:
+      context: .
+      dockerfile: ./wordsSynonyms/Dockerfile
     restart: on-failure
     depends_on:
       - rabbitmq
