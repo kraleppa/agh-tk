@@ -29,7 +29,7 @@ namespace MicrosoftExtractorsTest
             text = extractor.ReadMessageFromPowerPoint(file);
 
             Assert.IsNotNull(text);
-            Assert.AreEqual(text, "Testowa wiadomo�� powerpoint");
+            Assert.AreEqual(text, "Testowa wiadomosc powerpoint");
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ namespace MicrosoftExtractorsTest
             text = extractor.ReadMessageFromExcel(file);
 
             Assert.IsNotNull(text);
-            Assert.AreEqual(text, "Testowa wiadomosc excel\r\nTestowa wiadomosc excel\r\nTestowa wiadomosc excel\r\n");
+            Assert.AreEqual(text, "Testowa wiadomosc excel");
         }
     }
 }
