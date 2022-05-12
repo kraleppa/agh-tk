@@ -10,12 +10,11 @@ Testowanie:
 Routing key : words.forms - > Payload: 
 {
 "path": "C:/Users/Example",
-"phrase": ["Rycerz", "jest", "dzielny"],
-"queueKey": "words.forms",
+"phrase": "Rycerz jest dzielny",
 "filters":
 {
 "filetypes": ["docs", "jpeg", "mp4"],
-"searchModes": ["words.scraper", "words.synonyms", "words.forms"]
+"searchModes": [ "forms", "typos", "synonyms", "scraper"]
 },
 "words": []
 }
@@ -27,7 +26,7 @@ def receive():
     parameters = pika.ConnectionParameters('localhost')
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    method_frame, header_frame, body = channel.basic_get(queue = 'words.scraper')
+    method_frame, header_frame, body = channel.basic_get(queue = 'words.typos', auto_ack=True)
     if method_frame.NAME == 'Basic.GetEmpty':
         connection.close()
         return ''
@@ -39,15 +38,15 @@ def receive():
 
 def test(receive):
     expected = {"path": "C:/Users/Example", "phrase":
-        ["Rycerz", "jest", "dzielny"], "queueKey": "words.scraper", "filters":
-        {"filetypes": ["docs", "jpeg", "mp4"], "searchModes": ["words.synonyms", "words.forms", "words.scraper"]}, "words":
-        ["Rycerz", "Rycerza", "Rycerzowi", "Rycerzem", "Rycerzu", "Rycerzowie", "Rycerzów", "Rycerzom", "Rycerzami",
-         "Rycerzach", "Rycerze", "jest", "dzielniejszych", "dzielniejsze", "dzielniejszym", "dzielniejszymi",
-         "dzielniejsi", "dzielniejszą", "dzielniejszego", "dzielniejszy", "dzielniejszej", "dzielniejszemu",
-         "dzielniejsza", "dzielnych", "dzielne", "dzielnym", "dzielnymi", "dzielni", "dzielną", "dzielnego",
-         "dzielny", "dzielnej", "dzielnemu", "dzielna", "najdzielniejszych", "najdzielniejsze", "najdzielniejszym",
-         "najdzielniejszymi", "najdzielniejsi", "najdzielniejszą", "najdzielniejszego", "najdzielniejszy",
-         "najdzielniejszej", "najdzielniejszemu", "najdzielniejsza", "dzielno"]}
+        "Rycerz jest dzielny", "filters": {"filetypes": ["docs", "jpeg", "mp4"], "searchModes":
+        ["typos", "synonyms", "scraper", "forms"]}, "words":
+        ["Rycerz", "Rycerza", "Rycerzowi", "Rycerzem", "Rycerzu", "Rycerzowie", "Rycerzów",
+         "Rycerzom", "Rycerzami", "Rycerzach", "Rycerze", "jest", "dzielniejszych", "dzielniejsze",
+         "dzielniejszym", "dzielniejszymi", "dzielniejsi", "dzielniejszą", "dzielniejszego", "dzielniejszy",
+         "dzielniejszej", "dzielniejszemu", "dzielniejsza", "dzielnych", "dzielne", "dzielnym", "dzielnymi",
+         "dzielni", "dzielną", "dzielnego", "dzielny", "dzielnej", "dzielnemu", "dzielna", "najdzielniejszych",
+         "najdzielniejsze", "najdzielniejszym", "najdzielniejszymi", "najdzielniejsi", "najdzielniejszą",
+         "najdzielniejszego", "najdzielniejszy", "najdzielniejszej", "najdzielniejszemu", "najdzielniejsza", "dzielno"]}
     print(receive)
     print(expected)
     assert expected == receive

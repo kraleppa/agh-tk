@@ -11,11 +11,10 @@ Routing key : words.synonyms - > Payload:
 {
 "path": "C:/Users/Example",
 "phrase": "Rycerz jest dzielny",
-"queueKey": "words.synonyms",
 "filters":
 {
 "filetypes": ["docs", "jpeg", "mp4"],
-"searchModes": ["typos", "forms", "scraper", "synonyms"]
+"searchModes": [ "synonyms", "typos", "forms", "scraper"]
 },
 "words": []
 }
@@ -40,11 +39,11 @@ def receive():
 
 def test(receive):
     expected = {"path": "C:/Users/Example", "phrase":
-        ["Rycerz", "jest", "dzielny"], "queueKey": "words.typos", "filters":
+        "Rycerz jest dzielny", "filters":
         {"filetypes": ["docs", "jpeg", "mp4"], "searchModes":
-            ["words.forms", "scraper", "words.synonyms", "words.typos"]}, "words":
+            ["typos", "forms", "scraper", "synonyms"]}, "words":
         ["Rycerz", "jest", "dzielny", "rycerz", "feudał", "szlachcic", "wojownik", "żołnierz",
-         "dzielny", "mężny", "nieugięty", "nieulękły", "nieustraszony", "niezmordowany", "niezniechęcony",
+         "mężny", "nieugięty", "nieulękły", "nieustraszony", "niezmordowany", "niezniechęcony",
          "niezrażony", "odważny", "odporny", "śmiały", "wytrwały", "wytrzymały"]}
     print(receive)
     print(expected)

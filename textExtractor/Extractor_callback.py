@@ -25,6 +25,7 @@ class Callback():
         extracted = Callback.extract(myfile)
         message["text"] = extracted
 
+        message['fileState']['FileProcessed'] = True
         send_connect.RabbitMq.rabbit_send(message, self.host, self.routing_key, self.exchange)
         logger.info(f'Published Message: {message}')
 

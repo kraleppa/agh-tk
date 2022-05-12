@@ -1,20 +1,12 @@
 import sys
 import os
 
-if __name__ == "__main__":
+def run_app(log_name, exchange, host, queue, function):
 
     dir = os.path.dirname(os.getcwd())
     sys.path.insert(1, dir)
 
-    from wordsServices_textExtractor_config import receive_config, receive_connect
-    import Extractor_callback
-
-    log_name = "textExtractor"
-    exchange = 'text'
-    routing_key = 'text'
-    host = 'rabbitmq'
-    queue = 'format.txt'
-
+    from wordsServices_textExtractor_config import receive_config, receive_connect, callback_config
 
     serverconfigure = receive_config.RabbitMqServerConfigure(
         host = host,
@@ -24,5 +16,5 @@ if __name__ == "__main__":
 
     server = receive_connect.RabbitmqServer(server=serverconfigure, logger=logger)
     logger.info('Server started waiting for Messages')
-    callback = Extractor_callback.Callback(log_name, exchange, routing_key, host)
+    callback = callback_config.Callback(log_name, exchange, host, function)
     server.startserver(callback= callback.callback)

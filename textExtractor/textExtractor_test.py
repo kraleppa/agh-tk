@@ -6,7 +6,30 @@ import pytest
 Testowanie:
 1. Odpal plik textExtractor_run.py
 2. RabbitMQ -> Exchanges -> format -> Publish message ->
-Routing key : format.txt - > Payload: {"file": "test.txt", "words": "śląsk"} -> Publish message
+Routing key : format.txt - > Payload: 
+
+{
+  "phrase": "some text",
+  "path": "~/test",
+  "words": ["some", "text"],
+  "filters": {
+    "filterModes": [],
+    "fileTypes": [
+      ".pptx",
+      ".docx",
+      ".txt",
+      ".jpeg",
+      ".jpg",
+      ".png",
+      ".mp4",
+      ".zip"
+    ]
+  },
+  "file": "test.txt",
+  "fileState": {
+    "fileFound": true
+   }
+}
 3. Odpal textExtractor_test.py
 '''
 
@@ -15,7 +38,7 @@ def receive():
     parameters = pika.ConnectionParameters('localhost')
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    method_frame, header_frame, body = channel.basic_get(queue = 'text')
+    method_frame, header_frame, body = channel.basic_get(queue='text')
     if method_frame.NAME == 'Basic.GetEmpty':
         connection.close()
         return ''
@@ -26,7 +49,11 @@ def receive():
         return body
 
 def test(receive):
-    expected = {'file': 'test.txt', 'words': 'śląsk', 'text': 'Testing text extractor.\nLine 1\nLine 2'}
+    expected = {"phrase": "some text", "path": "~/test", "words":
+        ["some", "text"], "filters": {"filterModes": [], "fileTypes":
+        [".pptx", ".docx", ".txt", ".jpeg", ".jpg", ".png", ".mp4", ".zip"]}, "file":
+        "test.txt", "fileState": {"fileFound": True, "FileProcessed": True}, "text":
+        "Testing text extractor.\nLine 1\nLine 2"}
     print(receive)
     print(expected)
     assert expected == receive

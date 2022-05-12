@@ -14,12 +14,11 @@ Funkcja testowa porównuje jedynie czy wylosowano po 5 typosów dla każdego sł
 Routing key : words.typos - > Payload: 
 {
 "path": "C:/Users/Example",
-"phrase": ["Rycerz", "jest", "dzielny"],
-"queueKey": "words.typos",
+"phrase": "Rycerz jest dzielny",
 "filters":
 {
 "filetypes": ["docs", "jpeg", "mp4"],
-"searchModes": ["words.forms", "scraper", "words.synonyms", "words.typos"]
+"searchModes": [ "typos", "forms", "synonyms", "scraper"]
 },
 "words": []
 }
@@ -42,13 +41,10 @@ def receive():
         return body
 
 def test(receive):
-    expected = {"path": "C:/Users/Example", "phrase":
-        ["Rycerz", "jest", "dzielny"], "queueKey":
-        "words.forms", "filters":
-        {"filetypes": ["docs", "jpeg", "mp4"], "searchModes":
-            ["scraper", "words.synonyms", "words.typos", "words.forms"]}, "words":
-        ["Rycesa", "Ryserz", "Xycerz", "Tycerz", "Fycerz", "jvst", "hest", "jevt", "jrst",
-         "uvst", "fzielny", "dziekny", "dzielnj", "ezielny", "azielny"]}
+    expected = {"path": "C:/Users/Example", "phrase": "Rycerz jest dzielny", "filters":
+        {"filetypes": ["docs", "jpeg", "mp4"], "searchModes": ["forms", "synonyms", "scraper", "typos"]}, "words":
+        ["Rycerz", "jest", "dzielny", "Ryćerz", "Dicerz", "Rycqrz", "Rycsrz", "Rrcerz", "jfst", "jvst",
+         "jedt", "kest", "jesg", "dzialgy", "dzielnf", "dzieluy", "dzielńy", "dzielnv"]}
     print(receive)
     print(expected)
     assert len(expected['words']) == len(receive['words'])
