@@ -55,7 +55,7 @@ namespace MicrosoftExtractorsTest
             text = extractor.ReadMessageFromExcel(file);
 
             Assert.IsNotNull(text);
-            Assert.AreEqual(text, "Testowa wiadomosc excel");
+            Assert.AreEqual(text, "Testowa wiadomosc excel\n");
         }
     }
 }
