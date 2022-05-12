@@ -28,5 +28,5 @@ jobs:
         
       - name: Run tests with Maven
         run: |
-          cd ocr_service
+          cd state_service
           mvn -B test --file pom.xml
