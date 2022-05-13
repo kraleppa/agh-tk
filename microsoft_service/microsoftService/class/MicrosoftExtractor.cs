@@ -8,9 +8,9 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 public class MicrosoftExtractor
 {
-    public string ReadMessageFromExcel(string filePath)
+    public string ReadMessageFromExcel(Stream fileStream)
     {
-        using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filePath, false))
+        using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fileStream, false))
         {
             StringBuilder text = new StringBuilder();
 
@@ -41,11 +41,11 @@ public class MicrosoftExtractor
         }
     }
 
-    public string ReadMessageFromWord(string filePath)
+    public string ReadMessageFromWord(Stream fileStream)
     {
         string text;
 
-        using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
+        using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(fileStream, false))
         {
             Body body = wordDoc.MainDocumentPart.Document.Body;
             text = body.InnerText;
@@ -53,15 +53,15 @@ public class MicrosoftExtractor
         }
     }
 
-    public string ReadMessageFromPowerPoint(string filePath)
+    public string ReadMessageFromPowerPoint(Stream fileStream)
     {
-        Console.WriteLine(filePath);
+        Console.WriteLine(fileStream);
         string text = null;
 
-        int numberOfSlides = CountSlides(filePath);
+        int numberOfSlides = CountSlides(fileStream);
         for (int i = 0; i < numberOfSlides; i++)
         {
-            string newText = GetSlideIdAndText(filePath, i);
+            string newText = GetSlideIdAndText(fileStream, i);
             text += newText;
         }
 
@@ -69,9 +69,9 @@ public class MicrosoftExtractor
     }
 
 
-    public static int CountSlides(string filePath)
+    public static int CountSlides(Stream fileStream)
     {
-        using (PresentationDocument presentationDocument = PresentationDocument.Open(filePath, false))
+        using (PresentationDocument presentationDocument = PresentationDocument.Open(fileStream, false))
         {
             if (presentationDocument == null)
             {
@@ -90,9 +90,9 @@ public class MicrosoftExtractor
         }
     }
 
-    public static string GetSlideIdAndText(string filePath, int index)
+    public static string GetSlideIdAndText(Stream fileStream, int index)
     {
-        using (PresentationDocument ppt = PresentationDocument.Open(filePath, false))
+        using (PresentationDocument ppt = PresentationDocument.Open(fileStream, false))
         {
             PresentationPart part = ppt.PresentationPart;
             OpenXmlElementList slideIds = part.Presentation.SlideIdList.ChildElements;
