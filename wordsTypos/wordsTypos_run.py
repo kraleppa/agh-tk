@@ -1,12 +1,18 @@
-import Typos_receive_connect, Typos_receive_config
+import sys
+import os
 
 if __name__ == "__main__":
-    serverconfigure = Typos_receive_config.RabbitMqServerConfigure(
-        host = 'rabbitmq',
-        queue='words.typos')
 
-    logger = Typos_receive_config.RabbitMqServerConfigure.create_logger()
+    dir = os.path.dirname(os.getcwd())
+    sys.path.insert(1, dir)
 
-    server = Typos_receive_connect.RabbitmqServer(server=serverconfigure, logger=logger)
-    logger.info('Server started waiting for Messages')
-    server.startserver()
+    from wordsServices_textExtractor_config import run_config
+    import Typos_functions
+
+    log_name = "wordsTypos"
+    exchange = 'words'
+    host = 'rabbitmq'
+    queue = 'words.typos'
+    function = Typos_functions.create_typos_list
+
+    run_config.run_app(log_name, exchange, host, queue, function)

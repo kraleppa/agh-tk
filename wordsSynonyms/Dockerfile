@@ -1,9 +1,14 @@
 FROM python:3
 
-RUN mkdir -p /wordSynonyms
+RUN mkdir -p /wordsServices_textExtractor_config
 
-WORKDIR /wordSynonyms
-COPY . .
+COPY ./wordsServices_textExtractor_config ./wordsServices_textExtractor_config
+
+RUN mkdir -p /wordsSynonyms
+
+WORKDIR /wordsSynonyms
+
+COPY ./wordsSynonyms .
 
 RUN pip install pika
 

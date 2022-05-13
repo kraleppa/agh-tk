@@ -10,9 +10,9 @@ class RabbitMqServerConfigure():
         self.queue = queue
 
     @staticmethod
-    def create_logger():
+    def create_logger(log_name):
         logging.basicConfig(format='%(asctime)s - %(name)s%(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S%p')
-        logger = logging.getLogger('wordsSynonyms')
+        logger = logging.getLogger(log_name)
         logger.setLevel(logging.INFO)
         return logger
 
