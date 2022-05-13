@@ -94,9 +94,9 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
         to_send["video"] = Value::Object(map);
         let mut fileStateJson = &mut to_send["fileState"];
         if fileStateJson.is_object(){
-            let mut test = fileStateJson.as_object_mut().unwrap();
-            test.insert("fileProcessed".to_string(), Value::from(true));
-            test.insert("fileProcessingError".to_string(), Value::from(false));
+            let mut fileStateJsonObject = fileStateJson.as_object_mut().unwrap();
+            fileStateJsonObject.insert("fileProcessed".to_string(), Value::from(true));
+            fileStateJsonObject.insert("fileProcessingError".to_string(), Value::from(false));
         }
 
         let mut msg_to_send = to_send.to_string();
