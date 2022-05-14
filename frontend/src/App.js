@@ -1,16 +1,45 @@
 import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
-import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
-import { isArchivePath } from "./utils";
+import { isArchivePath, sendRequest } from "./utils";
+import { Client } from "@stomp/stompjs";
 
 function App() {
   const [results, setResults] = useState([]);
+  const [client, setClient] = useState();
+
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:15674/ws",
+      reconnectDelay: 5000,
+      heartbeatIncoming: 10000,
+      heartbeatOutgoing: 10000,
+    });
+    client.onConnect = (frame) => {
+      client.subscribe("/queue/result", onMessage);
+      console.info("Connected successfully");
+    };
+    client.onWebSocketError = () => {
+      console.error("Web Socket error");
+    };
+    client.onStompError = () => {
+      console.error("Stomp error");
+    };
+    const onMessage = (message) => {
+      if (message.body) {
+        console.info("Received message: " + message.body);
+        addResult(JSON.parse(message.body));
+      } else {
+        console.info("Received empty message");
+      }
+    };
+    setClient(client);
+    client.activate();
+    return () => client.deactivate();
+  }, []);
 
   const addResult = (newResult) => {
-    console.log("NEW RESULT: ", newResult);
-
     const resultParsed = {
       originalFile: "",
       fileState: {
@@ -36,21 +65,10 @@ function App() {
     }
   };
 
-  const connection = new RabbitMQConnection(addResult);
-
-  const onSubmit = ({ phrase, path }, fileFormats, searchModes) => {
+  const onSubmit = (phrase, path, fileTypes, searchModes) => {
     setResults([]);
-    connection.sendRequest(
-      phrase,
-      path.replace(/\\/g, "/"),
-      [...fileFormats],
-      [...searchModes]
-    );
+    sendRequest(client, phrase, path, fileTypes, searchModes);
   };
-
-  useEffect(() => {
-    console.dir(results);
-  }, [results]);
 
   return (
     <Box minHeight={"100vh"} bg="gray.50">

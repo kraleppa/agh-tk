@@ -70,7 +70,12 @@ const Form = ({ onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmit(data, selectedFileFormats, selectedSearchModes)
+        onSubmit(
+          data.phrase,
+          data.path,
+          selectedFileFormats,
+          selectedSearchModes
+        )
       )}
     >
       <Stack spacing={3}>

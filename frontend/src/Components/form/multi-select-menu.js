@@ -10,7 +10,6 @@ import {
   MenuItemOption,
   Button,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 
 const MultiSelectMenu = ({ selectedOptions, setSelectedOptions, ...props }) => {
   const { label, options, buttonProps } = props;
@@ -19,7 +18,6 @@ const MultiSelectMenu = ({ selectedOptions, setSelectedOptions, ...props }) => {
     <Menu closeOnSelect={false}>
       <MenuButton
         as={Button}
-        rightIcon={<ChevronDownIcon />}
         type="button"
         backgroundColor={"white"}
         color={selectedOptions.length ? "purple.500" : "gray.600"}
