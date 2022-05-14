@@ -12,5 +12,7 @@ object Utils {
 
     const val TESS_DATA = "/home/ocr_service/tessdata"
 
+    const val STATE_FIELD = "fileState"
+
     val LANGUAGES: List<String> = listOf("eng", "pol")
 }
