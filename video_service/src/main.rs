@@ -94,7 +94,7 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
         to_send["video"] = Value::Object(map);
         to_send["numberOfExtractedFrames"] = Value::from(files_with_frames.capacity());
         let mut fileStateJson = &mut to_send["fileState"];
-        if fileStateJson.is_object(){
+        if fileStateJson.is_object() {
             let mut fileStateJsonObject = fileStateJson.as_object_mut().unwrap();
             fileStateJsonObject.insert("fileProcessed".to_string(), Value::from(true));
             fileStateJsonObject.insert("fileProcessingError".to_string(), Value::from(false));
@@ -110,17 +110,17 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
 }
 
 fn send_json_without_frames(channel: &Channel, value: &Value, file_error: bool) {
-        let mut to_send = value.clone();
-        let mut fileStateJson = &mut to_send["fileState"];
-        if fileStateJson.is_object(){
-            let mut test = fileStateJson.as_object_mut().unwrap();
-            if file_error {
-                test.insert("fileProcessingError".to_string(), Value::from(file_error));
-            }
+    let mut to_send = value.clone();
+    let mut fileStateJson = &mut to_send["fileState"];
+    if fileStateJson.is_object() {
+        let mut test = fileStateJson.as_object_mut().unwrap();
+        if file_error {
+            test.insert("fileProcessingError".to_string(), Value::from(file_error));
         }
-        let mut msg_to_send = to_send.to_string();
-        info!("Sending to result: {}", msg_to_send);
-        channel.basic_publish("result", Publish::new(msg_to_send.as_bytes(), "result"));
+    }
+    let mut msg_to_send = to_send.to_string();
+    info!("Sending to result: {}", msg_to_send);
+    channel.basic_publish("result", Publish::new(msg_to_send.as_bytes(), "result"));
 }
 
 #[cfg(test)]
