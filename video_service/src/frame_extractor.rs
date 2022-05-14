@@ -37,6 +37,7 @@ pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
     info!("Extracting frames to dir: {}", dir);
     let mut frame_count = 0;
     let mut extracted_frame_count = 0;
+    let mut seconds_in_movie = 0;
     let mut working = read_res.unwrap();
     let mut files_list = Vector::<String>::new();
     if !working {
@@ -45,7 +46,8 @@ pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
     }
     while working {
         if frame_count % 100 == 0 {
-            let filename = format!("{}frame-{}.jpg", dir, frame_count);
+            seconds_in_movie = frame_count / 30;
+            let filename = format!("{}around_second-{}.jpg", dir, seconds_in_movie);
             let mut params = opencv::core::Vector::new();
             opencv::imgcodecs::imwrite(&filename, &frame, &params);
             files_list.push(filename.as_str());
