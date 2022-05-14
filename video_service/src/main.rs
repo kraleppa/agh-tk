@@ -92,6 +92,7 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
         let mut map = Map::new();
         map.insert("filePathInVolume".to_string(), Value::String(file));
         to_send["video"] = Value::Object(map);
+        to_send["numberOfExtractedFrames"] = Value::from(files_with_frames.capacity());
         let mut fileStateJson = &mut to_send["fileState"];
         if fileStateJson.is_object(){
             let mut fileStateJsonObject = fileStateJson.as_object_mut().unwrap();
