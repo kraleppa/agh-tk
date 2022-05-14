@@ -42,6 +42,7 @@ fn main() -> Result<()> {
     for (_, message) in consumer.receiver().iter().enumerate() {
         match message {
             ConsumerMessage::Delivery(delivery) => unsafe {
+                let mut file_error = false;
                 let body = String::from_utf8_lossy(&delivery.body);
                 let res = serde_json::from_str(&body);
                 if res.is_err() {
@@ -53,6 +54,8 @@ fn main() -> Result<()> {
                 let file_option = v["file"].as_str();
                 if file_option.is_none() {
                     error!("Message does not contain file property");
+                    file_error = true;
+                    send_json_without_frames(&channel, &v, file_error);
                     consumer.ack(delivery)?;
                     continue;
                 }
@@ -62,6 +65,8 @@ fn main() -> Result<()> {
                 let result_files_with_frames = frame_extractor::extract_frames(file);
                 if result_files_with_frames.is_err() {
                     error!("no frames extracted {:?}", result_files_with_frames.err());
+                    file_error = true;
+                    send_json_without_frames(&channel, &v, file_error);
                     consumer.ack(delivery)?;
                     continue;
                 }
@@ -87,10 +92,35 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
         let mut map = Map::new();
         map.insert("filePathInVolume".to_string(), Value::String(file));
         to_send["video"] = Value::Object(map);
+        to_send["numberOfExtractedFrames"] = Value::from(files_with_frames.capacity());
+        let mut fileStateJson = &mut to_send["fileState"];
+        if fileStateJson.is_object() {
+            let mut fileStateJsonObject = fileStateJson.as_object_mut().unwrap();
+            fileStateJsonObject.insert("fileProcessed".to_string(), Value::from(true));
+            fileStateJsonObject.insert("fileProcessingError".to_string(), Value::from(false));
+        }
+
         let mut msg_to_send = to_send.to_string();
-        info!("Sending : {}", msg_to_send);
+        info!("Sending to scraper: {}", msg_to_send);
         channel.basic_publish("words", Publish::new(msg_to_send.as_bytes(), "words.scraper"));
+
+        info!("Sending to result: {}", msg_to_send);
+        channel.basic_publish("result", Publish::new(msg_to_send.as_bytes(), "result"));
     }
+}
+
+fn send_json_without_frames(channel: &Channel, value: &Value, file_error: bool) {
+    let mut to_send = value.clone();
+    let mut fileStateJson = &mut to_send["fileState"];
+    if fileStateJson.is_object() {
+        let mut test = fileStateJson.as_object_mut().unwrap();
+        if file_error {
+            test.insert("fileProcessingError".to_string(), Value::from(file_error));
+        }
+    }
+    let mut msg_to_send = to_send.to_string();
+    info!("Sending to result: {}", msg_to_send);
+    channel.basic_publish("result", Publish::new(msg_to_send.as_bytes(), "result"));
 }
 
 #[cfg(test)]
