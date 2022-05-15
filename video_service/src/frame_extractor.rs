@@ -3,11 +3,9 @@ use opencv::{
     prelude::*,
     Result,
 };
-use chrono::Utc;
 use opencv;
 use opencv::core::Vector;
 use opencv::videoio::{CAP_ANY, VideoCaptureTrait};
-use serde_json::Value::String;
 
 pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
     let dir_res = env::var("OUTPUT_DIR");
@@ -15,10 +13,7 @@ pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
         return Err("Failed to get dir for extracted files".to_string());
     }
     let dir = dir_res.unwrap();
-    let dt = Utc::now();
-    let timestamp: i64 = dt.timestamp();
-    let dir_with_timestamp = format!("{}{}/",dir,timestamp);
-    let dir_create_res = std::fs::create_dir_all(&dir_with_timestamp);
+    let dir_create_res = std::fs::create_dir_all(&dir);
     if dir_create_res.is_err() {
         error!("Failed to create dir for output files. Err: {:?}", dir_create_res.err());
         return Err("Failed to create dir for output files.".to_string());
@@ -52,7 +47,6 @@ pub unsafe fn extract_frames(file: &str) -> Result<Vector<String>, String> {
     while working {
         if frame_count % 100 == 0 {
             seconds_in_movie = frame_count / 30;
-
             let filename = format!("{}{}.jpg",dir, seconds_in_movie);
             let mut params = opencv::core::Vector::new();
             opencv::imgcodecs::imwrite(&filename, &frame, &params);
