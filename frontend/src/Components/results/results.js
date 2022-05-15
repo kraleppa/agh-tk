@@ -50,14 +50,16 @@ const Results = ({ results }) => {
       {!!results
         ? results
             .filter((res) =>
-              showOnlyPhraseFound ? !!res.fileState.phraseFound : true
+              showOnlyPhraseFound
+                ? res.parsedFileState === "PHRASE_FOUND"
+                : true
             )
             .map((result, i) => (
               <div key={`${result.originalFile}-${i}`}>
                 <Result
                   path={result.originalFile}
                   fileFormat={result.originalFile.split(".").pop()}
-                  fileState={result.fileState}
+                  parsedFileState={result.parsedFileState}
                 ></Result>
                 {i < results.length - 1 ? (
                   <Divider borderColor="gray.300" />

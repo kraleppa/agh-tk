@@ -3,6 +3,22 @@ export const isArchivePath = (path) => {
   return archiveTypes.includes(path.split(".").pop());
 };
 
+const parseState = (fileState) => {
+  let parsedState;
+  if (fileState.phraseFound != null) {
+    !!fileState.phraseFound
+      ? (parsedState = "PHRASE_FOUND")
+      : (parsedState = "PHRASE_NOT_FOUND");
+  } else if (fileState.fileProcessed != null) {
+    parsedState = "FILE_PROCESSED";
+  } else if (fileState.fileProcessingError != null) {
+    parsedState = "FILE_ERROR";
+  } else {
+    parsedState = "FILE_PROCESSING";
+  }
+  return parsedState;
+};
+
 export const parseResult = (result) => {
   const resultParsed = {
     originalFile: "",
@@ -13,6 +29,9 @@ export const parseResult = (result) => {
       phraseFound: result.found,
     },
   };
+
+  resultParsed.parsedFileState = parseState(resultParsed.fileState);
+
   if (!!result.video) {
     resultParsed.originalFile = result.originalFile
       ? result.originalFile
