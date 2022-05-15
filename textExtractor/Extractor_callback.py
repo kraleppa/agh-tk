@@ -22,10 +22,10 @@ class Callback():
         myfile = message['file']
         logger = receive_config.RabbitMqServerConfigure.create_logger(self.log_name)
         logger.info(f'Received file: {myfile}')
-        extracted = Callback.extract(myfile)
-        message["text"] = extracted
 
         try:
+            extracted = Callback.extract(myfile)
+            message["text"] = extracted
             message['fileState']['fileProcessed'] = True
             message['fileState']['fileProcessingError'] = False
             send_connect.RabbitMq.rabbit_send(message, self.host, routing_key='result', exchange='result')
