@@ -37,6 +37,16 @@ object Common {
             archive.put("filePathInArchive", joinPaths(inputArchivePath, entry.getName))
             messageCopy.put("archive", archive)
           }
+
+          var fileState: JSONObject = null
+          if(messageCopy.has("fileState")) {
+            fileState = messageCopy.getJSONObject("fileState")
+          } else {
+            fileState = new JSONObject()
+          }
+          fileState.put("fileProcessed", true)
+          
+          Publisher.publishToResult(messageCopy.toString)
           Publisher.publish(messageCopy.toString)
         }
       }
