@@ -6,7 +6,7 @@ WORKDIR /app
 # Install dependencies
 COPY package.json /app
 
-RUN npm install -g npm@8.5.5
+RUN npm install -g npm@8.10.0
 RUN npm install
 
 # Add rest of the client code

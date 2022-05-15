@@ -8,7 +8,8 @@ namespace TextAnalyzer.Worker
 {
     public class Worker : BackgroundService
     {
-        public const string targetExchange = "result";
+        public const string targetExchange = "result_text";
+        public const string routingKey = "result";
         const string queueName = "text";
         const string exchangeName = "text";
 
@@ -27,7 +28,7 @@ namespace TextAnalyzer.Worker
             var options = _options.Value;
             var factory = new ConnectionFactory()
             {
-                HostName = options.Hostname, 
+                HostName = options.Hostname,
                 Port = options.Port
             };
             while (!stoppingToken.IsCancellationRequested)
@@ -49,8 +50,6 @@ namespace TextAnalyzer.Worker
 
                 using var connection = factory.CreateConnection();
                 using var channel = connection.CreateModel();
-
-                channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: queueName);
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
@@ -87,7 +86,7 @@ namespace TextAnalyzer.Worker
 
             var jsonText = receivedMessage.ToString();
             var messageBuffer = Encoding.Default.GetBytes(jsonText);
-            channel.BasicPublish(exchange: targetExchange, routingKey: targetExchange, basicProperties: null, messageBuffer);
+            channel.BasicPublish(exchange: targetExchange, routingKey: routingKey, basicProperties: null, messageBuffer);
             _logger.LogInformation(" [x] Sent {0}", jsonText);
         }
 
