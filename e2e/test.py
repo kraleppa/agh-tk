@@ -20,6 +20,9 @@ class E2ETests(unittest.TestCase):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         self.channel = connection.channel()
 
+    def setUp(self):
+        self.channel.queue_purge("result")
+
     def wait_for_message(self, sleep, count):
         """
         Method implementing blocking message consuming
@@ -43,19 +46,19 @@ class E2ETests(unittest.TestCase):
             "path": HOME_PATH,
             "filters": {
                 "fileTypes": [".txt"],
-                "filterModes":[]
+                "searchModes":[]
             },
             "words":["text"]
         }
         
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.txt")
-        self.assertEqual(res['text'], 'this is some random text with random words')
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.txt")
+        self.assertEqual(res1['found'], True)
 
     def test_should_find_phrase_in_images(self):
         # given
@@ -64,13 +67,16 @@ class E2ETests(unittest.TestCase):
             "path": HOME_PATH,
             "filters": {
                 "fileTypes": [".png"],
-                "filterModes":[]
+                "searchModes":[]
             },
             "words":["some"]
         }
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        file_found_message2 = self.wait_for_message(0.5, 5)
         res1 = self.wait_for_message(0.5, 5)
         res2 = self.wait_for_message(0.5, 5)
 
@@ -85,18 +91,20 @@ class E2ETests(unittest.TestCase):
             "path": HOME_PATH,
             "filters": {
                 "fileTypes": [".docx"],
-                "filterModes":[]
+                "searchModes":[]
             },
             "words":["some"]
         }
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
+        
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.docx")
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.docx")
+        self.assertEqual(res1['found'], True)
 
     def test_should_find_phrase_in_pptx_title(self):
         # given
@@ -105,18 +113,19 @@ class E2ETests(unittest.TestCase):
             "path": HOME_PATH,
             "filters": {
                 "fileTypes": [".pptx"],
-                "filterModes":[]
+                "searchModes":[]
             },
             "words":["cool"]
         }
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.pptx")
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.pptx")
+        self.assertEqual(res1['found'], True)
 
     def test_should_find_phrase_in_pptx_body(self):
         # given
@@ -125,18 +134,87 @@ class E2ETests(unittest.TestCase):
             "path": HOME_PATH,
             "filters": {
                 "fileTypes": [".pptx"],
-                "filterModes":[]
+                "searchModes":[]
             },
             "words":["marynarzem"]
         }
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.pptx")
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.pptx")
+        self.assertEqual(res1['found'], True)
+
+    def test_should_find_synonym_phrase_in_file(self):
+        # given
+        mock_request = {
+            "phrase": "kot",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".txt"],
+                "searchModes":["synonyms", "scraper"]
+            },
+            "words":["kot"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.synonyms', body=json.dumps(mock_request))
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
+
+        # then
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.txt")
+        self.assertEqual(res1['found'], True)
+
+    def test_should_find_typo_phrase_in_file(self):
+        # given
+        mock_request = {
+            "phrase": "miasto",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".txt"],
+                "searchModes":["typos", "scraper"]
+            },
+            "words":["miasto"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.typos', body=json.dumps(mock_request))
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
+
+        # then
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.txt")
+        self.assertEqual(res1['found'], True)
+
+    def test_should_find_phrase_in_mp4_file(self):
+        # given
+        mock_request = {
+            "phrase": "text",
+            "path": HOME_PATH,
+            "filters": {
+                "fileTypes": [".mp4"],
+                "searchModes":["scraper"]
+            },
+            "words":["text"]
+        }
+
+        # when
+        self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+        self.wait_for_message(0.5, 5)
+        self.wait_for_message(0.5, 5)
+        self.wait_for_message(0.5, 5)
+        self.wait_for_message(0.5, 5)
+        self.wait_for_message(0.5, 5)
+        self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(1, 20)
+
+        # # then
+        self.assertEqual(res1['originalFile'], f"{VOLUME_PATH}/testmp4.mp4")
+        self.assertEqual(res1['found'], True)
 
 
 
