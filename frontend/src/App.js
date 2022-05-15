@@ -2,7 +2,12 @@ import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
-import { isArchivePath, parseResult, sendRequest } from "./utils";
+import {
+  isArchivePath,
+  parseResult,
+  resultShouldBeReplaced,
+  sendRequest,
+} from "./utils";
 import { Client } from "@stomp/stompjs";
 
 function App() {
@@ -40,15 +45,24 @@ function App() {
   }, []);
 
   const addResult = (result) => {
-    const resultParsed = parseResult(result);
+    const newResult = parseResult(result);
 
-    if (!isArchivePath(resultParsed.originalFile)) {
-      setResults((oldResults) => [
-        ...oldResults.filter(
-          (x) => x.originalFile !== resultParsed.originalFile
-        ),
-        resultParsed,
-      ]);
+    const currentResult = results.find(
+      (res) => res.originalFile === newResult.originalFile
+    );
+
+    if (
+      !currentResult ||
+      (!!currentResult && resultShouldBeReplaced(currentResult, newResult))
+    ) {
+      if (!isArchivePath(newResult.originalFile)) {
+        setResults((oldResults) => [
+          ...oldResults.filter(
+            (x) => x.originalFile !== newResult.originalFile
+          ),
+          newResult,
+        ]);
+      }
     }
   };
 

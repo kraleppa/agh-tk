@@ -9,6 +9,7 @@ export const parseResult = (result) => {
     fileState: {
       fileFound: result.fileState?.fileFound,
       fileProcessed: result.fileState?.fileProcessed,
+      fileProcessingError: result.fileState?.fileProcessingError,
       phraseFound: result.found,
     },
   };
@@ -23,6 +24,22 @@ export const parseResult = (result) => {
   }
 
   return resultParsed;
+};
+
+export const resultShouldBeReplaced = (oldResult, newResult) => {
+  //file found -> file processed -> phrase found true/false
+
+  // return false if the phrase was found for the oldResult, and for newResult it was not
+  // checked to handle the video which consists of many frames that are being sent to frontend
+  if (
+    newResult.fileState?.phraseFound != null &&
+    !newResult.fileState?.phraseFound &&
+    oldResult.fileState?.phraseFound != null &&
+    !!oldResult.fileState?.phraseFound
+  ) {
+    return false;
+  }
+  return true;
 };
 
 export const sendRequest = (client, phrase, path, fileTypes, searchModes) => {
