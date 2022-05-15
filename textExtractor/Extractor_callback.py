@@ -25,9 +25,20 @@ class Callback():
         extracted = Callback.extract(myfile)
         message["text"] = extracted
 
-        message['fileState']['FileProcessed'] = True
-        send_connect.RabbitMq.rabbit_send(message, self.host, self.routing_key, self.exchange)
-        logger.info(f'Published Message: {message}')
+        try:
+            message['fileState']['fileProcessed'] = True
+            message['fileState']['fileProcessingError'] = False
+            send_connect.RabbitMq.rabbit_send(message, self.host, routing_key='result', exchange='result')
+            logger.info(f'Message was successfully forwarded with routing key: result')
+        except:
+            message['fileState']['fileProcessed'] = False
+            message['fileState']['fileProcessingError'] = True
+            logger.warning(f'An error occurred while sending with routing key: result')
+        finally:
+            send_connect.RabbitMq.rabbit_send(message, self.host, self.routing_key, self.exchange)
+            logger.info(f'Message was successfully forwarded with routing key: {self.routing_key}')
+            logger.info(f'Published Message: {message}')
+
 
     @staticmethod
     def extract(file):
