@@ -2,7 +2,12 @@ import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
-import { isArchivePath, sendRequest } from "./utils";
+import {
+  isArchivePath,
+  parseResult,
+  resultShouldBeReplaced,
+  sendRequest,
+} from "./utils";
 import { Client } from "@stomp/stompjs";
 
 function App() {
@@ -39,28 +44,27 @@ function App() {
     return () => client.deactivate();
   }, []);
 
-  const addResult = (newResult) => {
-    const resultParsed = {
-      originalFile: "",
-      fileState: {
-        phraseFound: newResult.found,
-        fileFound: newResult.fileState?.fileFound,
-      },
-    };
-    if (!!newResult.video) {
-      resultParsed.originalFile = newResult.originalFile;
-    } else if (!!newResult.archive) {
-      resultParsed.originalFile = newResult.archive.filePathInArchive;
-    } else {
-      resultParsed.originalFile = newResult.file;
+  const addResult = (result) => {
+    const newResult = parseResult(result);
+
+    //we filter out messages with path to archive
+    //because we don't want to show archives in results list
+    //we want to show only files inside archives (and they come in separately)
+    if (isArchivePath(newResult.originalFile)) {
+      return;
     }
 
-    if (!isArchivePath(resultParsed.originalFile)) {
+    const currentResult = results.find(
+      (res) => res.originalFile === newResult.originalFile
+    );
+
+    if (
+      !currentResult ||
+      (!!currentResult && resultShouldBeReplaced(currentResult, newResult))
+    ) {
       setResults((oldResults) => [
-        ...oldResults.filter(
-          (x) => x.originalFile !== resultParsed.originalFile
-        ),
-        resultParsed,
+        ...oldResults.filter((x) => x.originalFile !== newResult.originalFile),
+        newResult,
       ]);
     }
   };
