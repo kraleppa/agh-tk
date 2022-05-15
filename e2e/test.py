@@ -20,6 +20,9 @@ class E2ETests(unittest.TestCase):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         self.channel = connection.channel()
 
+    def setUp(self):
+        self.channel.queue_purge("result")
+
     def wait_for_message(self, sleep, count):
         """
         Method implementing blocking message consuming
@@ -32,6 +35,7 @@ class E2ETests(unittest.TestCase):
                 (method, _, body) = res
                 self.channel.basic_ack(method.delivery_tag)
                 body_string = body.decode("utf-8")
+                print(json.loads(body_string))
                 return json.loads(body_string)
 
         raise TimeoutError("Did not receive any message in given time")
@@ -50,12 +54,13 @@ class E2ETests(unittest.TestCase):
         
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.txt")
-        self.assertEqual(res['text'], 'this is some random text with random words')
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.txt")
+        self.assertEqual(res1['text'], 'this is some random text with random words')
+        self.assertEqual(res1['found'], True)
 
     def test_should_find_phrase_in_images(self):
         # given
@@ -71,6 +76,9 @@ class E2ETests(unittest.TestCase):
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
+
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        file_found_message2 = self.wait_for_message(0.5, 5)
         res1 = self.wait_for_message(0.5, 5)
         res2 = self.wait_for_message(0.5, 5)
 
@@ -92,11 +100,13 @@ class E2ETests(unittest.TestCase):
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
+        
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.docx")
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.docx")
+        self.assertEqual(res1['found'], True)
 
     def test_should_find_phrase_in_pptx_title(self):
         # given
@@ -112,11 +122,12 @@ class E2ETests(unittest.TestCase):
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.pptx")
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.pptx")
+        self.assertEqual(res1['found'], True)
 
     def test_should_find_phrase_in_pptx_body(self):
         # given
@@ -132,11 +143,12 @@ class E2ETests(unittest.TestCase):
 
         # when
         self.channel.basic_publish(exchange='words', routing_key='words.scraper', body=json.dumps(mock_request))
-        res = self.wait_for_message(0.5, 5)
+        file_found_message1 = self.wait_for_message(0.5, 5)
+        res1 = self.wait_for_message(0.5, 5)
 
         # then
-        self.assertEqual(res['file'], f"{VOLUME_PATH}/test.pptx")
-        self.assertEqual(res['found'], True)
+        self.assertEqual(res1['file'], f"{VOLUME_PATH}/test.pptx")
+        self.assertEqual(res1['found'], True)
 
 
 
