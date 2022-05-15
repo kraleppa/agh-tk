@@ -7,6 +7,7 @@ import com.rabbitmq.client.Envelope
 import org.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import pl.agh.tk.ocr.Utils.STATE_FIELD
 
 class OcrConsumer(channelIn: Channel, private val channelOut: Channel) : DefaultConsumer(channelIn) {
 
@@ -22,8 +23,8 @@ class OcrConsumer(channelIn: Channel, private val channelOut: Channel) : Default
     ) {
         if (body != null) {
             val json = JSONObject(String(body))
-            val extractedText: String = ocrWorker.extractText(json.getString("file"))
-            json.put("text", extractedText)
+            val extractedText: String? = ocrWorker.extractText(json.getString("file"))
+            setState(json, extractedText)
 
             channelOut.basicPublish(
                 Utils.EXCHANGE_NAME,
@@ -33,5 +34,26 @@ class OcrConsumer(channelIn: Channel, private val channelOut: Channel) : Default
             )
             logger.info("sent response with: $json")
         }
+    }
+
+    private fun setState(json: JSONObject, extractedText: String?) {
+        val fileState = getJsonObject(json)
+        if (extractedText != null) {
+            json.put("text", extractedText)
+            fileState.put("fileProcessed", true)
+        } else {
+            json.put("text", "")
+            fileState.put("fileProcessingError", true)
+        }
+        json.put(STATE_FIELD, fileState)
+    }
+
+    private fun getJsonObject(json: JSONObject): JSONObject {
+        val fileState: JSONObject = if (json.has(STATE_FIELD)) {
+            json.get(STATE_FIELD) as JSONObject
+        } else {
+            JSONObject()
+        }
+        return fileState
     }
 }
