@@ -3,6 +3,28 @@ export const isArchivePath = (path) => {
   return archiveTypes.includes(path.split(".").pop());
 };
 
+export const parseResult = (result) => {
+  const resultParsed = {
+    originalFile: "",
+    fileState: {
+      fileFound: result.fileState?.fileFound,
+      fileProcessed: result.fileState?.fileProcessed,
+      phraseFound: result.found,
+    },
+  };
+  if (!!result.video) {
+    resultParsed.originalFile = result.originalFile
+      ? result.originalFile
+      : result.file;
+  } else if (!!result.archive) {
+    resultParsed.originalFile = result.archive.filePathInArchive;
+  } else {
+    resultParsed.originalFile = result.file;
+  }
+
+  return resultParsed;
+};
+
 export const sendRequest = (client, phrase, path, fileTypes, searchModes) => {
   const message = {
     phrase: phrase,

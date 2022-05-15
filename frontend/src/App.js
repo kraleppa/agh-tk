@@ -2,7 +2,7 @@ import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
-import { isArchivePath, sendRequest } from "./utils";
+import { isArchivePath, parseResult, sendRequest } from "./utils";
 import { Client } from "@stomp/stompjs";
 
 function App() {
@@ -39,21 +39,8 @@ function App() {
     return () => client.deactivate();
   }, []);
 
-  const addResult = (newResult) => {
-    const resultParsed = {
-      originalFile: "",
-      fileState: {
-        phraseFound: newResult.found,
-        fileFound: newResult.fileState?.fileFound,
-      },
-    };
-    if (!!newResult.video) {
-      resultParsed.originalFile = newResult.originalFile;
-    } else if (!!newResult.archive) {
-      resultParsed.originalFile = newResult.archive.filePathInArchive;
-    } else {
-      resultParsed.originalFile = newResult.file;
-    }
+  const addResult = (result) => {
+    const resultParsed = parseResult(result);
 
     if (!isArchivePath(resultParsed.originalFile)) {
       setResults((oldResults) => [
