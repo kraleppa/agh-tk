@@ -1,44 +1,27 @@
 import { Box, Badge, Flex, Heading, Grid, GridItem } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { fileFormats } from "./file-formats";
+import { fileTypes } from "../../utils/file-types";
 
-const Result = ({ path, fileFormat, fileState }) => {
-  const badgeBackgroundColor = fileFormats.find(
-    (format) => format.value === fileFormat
-  )?.color;
+const Result = ({ filePath, fileFormat, parsedFileState }) => {
+  const badgeBackgroundColor = fileTypes[fileFormat]?.color;
 
-  const [parsedFileState, setParsedFileState] = useState("");
-
-  useEffect(() => {
-    setParsedFileState(parseFileState(fileState));
-  }, [fileState]);
-
-  const parseFileState = (fileState) => {
-    if (!fileState) {
-      return "";
-    } else if (fileState.phraseFound != null) {
-      if (!!fileState.phraseFound) {
-        return "Phrase found";
-      } else {
-        return "Phrase not found";
-      }
-    } else if (!!fileState.fileFound) {
-      return "Processing...";
-    } else {
-      return "Phrase not found";
-    }
+  const fileStateMap = {
+    PHRASE_FOUND: "Phrase found",
+    PHRASE_NOT_FOUND: "Phrase not found",
+    PROCESSED: "File processed",
+    ERROR: "Error",
+    PROCESSING: "Processing...",
   };
 
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap={4}>
       <GridItem colSpan={8}>
         <Box py="4">
-          <Heading size="sm">{path}</Heading>
+          <Heading size="sm">{filePath}</Heading>
         </Box>
       </GridItem>
       <GridItem colSpan={3}>
         <Box py="4">
-          <Heading size="sm">{parsedFileState}</Heading>
+          <Heading size="sm">{fileStateMap[parsedFileState] || ""}</Heading>
         </Box>
       </GridItem>
       <GridItem colSpan={1}>

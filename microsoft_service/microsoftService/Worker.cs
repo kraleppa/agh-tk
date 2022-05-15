@@ -14,6 +14,7 @@ namespace microsoftService
         private MicrosoftExtractor MicrosoftExtractor = new MicrosoftExtractor();
         const string queueName = "format.microsoft";
         const string targetExchange = "text";
+        const string resultExchange = "result";
 
         public Worker(IOptions<WorkerOptions> options,
             ILogger<Worker> logger)
@@ -75,31 +76,18 @@ namespace microsoftService
             }
         }
 
-        private void ForwardResult(ConnectionFactory factory, JObject jsonObj, string text)
-        {
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
-
-            jsonObj["text"] = text;
-
-            var jsonText = jsonObj.ToString();
-            var messageBuffer = Encoding.Default.GetBytes(jsonText);
-            channel.BasicPublish(exchange: targetExchange, routingKey: targetExchange, basicProperties: null,
-                messageBuffer);
-            _logger.LogInformation(" [x] Sent {0}", jsonText);
-        }
-
         private void ExtractMessageFromMicrosoftDocument(ConnectionFactory factory, JObject jsonObj, string routingKey)
         {
             var receivedMessage = jsonObj.ToObject<JsonToAnalyze>();
             var extension = routingKey.Split(".");
             _logger.LogInformation(" extension: {0}", extension[extension.Length - 1]);
 
+            using var fileStream = File.OpenRead(receivedMessage.file);
             string text = extension[^1] switch
             {
-                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(receivedMessage.file),
-                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(receivedMessage.file),
-                "docx" => MicrosoftExtractor.ReadMessageFromWord(receivedMessage.file),
+                "xlsx" => MicrosoftExtractor.ReadMessageFromExcel(fileStream),
+                "pptx" => MicrosoftExtractor.ReadMessageFromPowerPoint(fileStream),
+                "docx" => MicrosoftExtractor.ReadMessageFromWord(fileStream),
                 _ => ThorwAndLog()
             };
 
@@ -111,6 +99,28 @@ namespace microsoftService
                 _logger.LogWarning("This extension is not correct. {0}", extension[extension.Length - 1]);
                 throw new ArgumentException();
             }
+        }
+
+        private void ForwardResult(ConnectionFactory factory, JObject jsonObj, string text)
+        {
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+
+            jsonObj["text"] = text;
+            var fileStateJson = jsonObj["fileState"];
+            if(fileStateJson != null
+                && fileStateJson is JObject fileStateJsonObject)
+                fileStateJsonObject["fileProcessed"] = true;
+
+            var jsonText = jsonObj.ToString();
+            var messageBuffer = Encoding.Default.GetBytes(jsonText);
+            
+            channel.BasicPublish(exchange: targetExchange, routingKey: targetExchange, basicProperties: null,
+                messageBuffer);
+            _logger.LogInformation(" [x] Sent message to text exchange: {0}", jsonText);
+            channel.BasicPublish(exchange: resultExchange, routingKey: resultExchange, basicProperties: null,
+                messageBuffer);
+            _logger.LogInformation(" [x] Sent message to result exchange: {0}", jsonText);
         }
     }
 }

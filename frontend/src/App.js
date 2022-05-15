@@ -1,56 +1,78 @@
 import { Box, Container, Heading, SimpleGrid } from "@chakra-ui/react";
-import { RabbitMQConnection } from "./webSockets/RabbitMQConnection";
 import { useEffect, useState } from "react";
 import Results from "./Components/results/results";
 import Form from "./Components/form/form";
-import { isArchivePath } from "./utils";
+import {
+  isArchivePath,
+  parseResult,
+  resultShouldBeReplaced,
+  sendRequest,
+} from "./utils";
+import { Client } from "@stomp/stompjs";
 
 function App() {
   const [results, setResults] = useState([]);
+  const [client, setClient] = useState();
 
-  const addResult = (newResult) => {
-    console.log("NEW RESULT: ", newResult);
-
-    const resultParsed = {
-      originalFile: "",
-      fileState: {
-        phraseFound: newResult.found,
-        fileFound: newResult.fileState?.fileFound,
-      },
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:15674/ws",
+      reconnectDelay: 5000,
+      heartbeatIncoming: 10000,
+      heartbeatOutgoing: 10000,
+    });
+    client.onConnect = (frame) => {
+      client.subscribe("/queue/result", onMessage);
+      console.info("Connected successfully");
     };
-    if (!!newResult.video) {
-      resultParsed.originalFile = newResult.originalFile;
-    } else if (!!newResult.archive) {
-      resultParsed.originalFile = newResult.archive.filePathInArchive;
-    } else {
-      resultParsed.originalFile = newResult.file;
+    client.onWebSocketError = () => {
+      console.error("Web Socket error");
+    };
+    client.onStompError = () => {
+      console.error("Stomp error");
+    };
+    const onMessage = (message) => {
+      if (message.body) {
+        console.info("Received message: " + message.body);
+        addResult(JSON.parse(message.body));
+      } else {
+        console.info("Received empty message");
+      }
+    };
+    setClient(client);
+    client.activate();
+    return () => client.deactivate();
+  }, []);
+
+  const addResult = (result) => {
+    const newResult = parseResult(result);
+
+    //we filter out messages with path to archive
+    //because we don't want to show archives in results list
+    //we want to show only files inside archives (and they come in separately)
+    if (isArchivePath(newResult.originalFile)) {
+      return;
     }
 
-    if (!isArchivePath(resultParsed.originalFile)) {
+    const currentResult = results.find(
+      (res) => res.originalFile === newResult.originalFile
+    );
+
+    if (
+      !currentResult ||
+      (!!currentResult && resultShouldBeReplaced(currentResult, newResult))
+    ) {
       setResults((oldResults) => [
-        ...oldResults.filter(
-          (x) => x.originalFile !== resultParsed.originalFile
-        ),
-        resultParsed,
+        ...oldResults.filter((x) => x.originalFile !== newResult.originalFile),
+        newResult,
       ]);
     }
   };
 
-  const connection = new RabbitMQConnection(addResult);
-
-  const onSubmit = ({ phrase, path }, fileFormats, searchModes) => {
+  const onSubmit = (phrase, path, fileTypes, searchModes) => {
     setResults([]);
-    connection.sendRequest(
-      phrase,
-      path.replace(/\\/g, "/"),
-      [...fileFormats],
-      [...searchModes]
-    );
+    sendRequest(client, phrase, path, fileTypes, searchModes);
   };
-
-  useEffect(() => {
-    console.dir(results);
-  }, [results]);
 
   return (
     <Box minHeight={"100vh"} bg="gray.50">

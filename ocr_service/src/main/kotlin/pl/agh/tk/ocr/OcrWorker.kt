@@ -18,7 +18,7 @@ class OcrWorker(tessData: String = TESS_DATA) {
         tesseract.setDatapath(tessData)
     }
 
-    fun extractText(filePath: String): String {
+    fun extractText(filePath: String): String? {
         logger.info("starting extracting text")
         var result = ""
         val file = File(filePath)
@@ -31,6 +31,7 @@ class OcrWorker(tessData: String = TESS_DATA) {
             }
         } catch (e: Exception) {
             logger.error(e.stackTraceToString())
+            return null
         }
         logger.info("filePath: $filePath, extracted text: $result")
         return result

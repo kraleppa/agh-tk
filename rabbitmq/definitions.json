@@ -69,7 +69,7 @@
             "internal": false,
             "arguments": {}
         },{
-            "name": "state",
+            "name": "result_text",
             "vhost": "/",
             "type": "direct",
             "durable": true,
@@ -254,7 +254,15 @@
             "arguments": {}
         },
         {
-            "source": "result",
+            "source": "result_text",
+            "vhost": "/",
+            "destination": "result",
+            "destination_type": "queue",
+            "routing_key": "result",
+            "arguments": {}
+        },
+        {
+            "source": "result_text",
             "vhost": "/",
             "destination": "state",
             "destination_type": "queue",

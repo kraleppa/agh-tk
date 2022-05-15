@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import MultiSelectMenu from "./multi-select-menu";
 import { useForm } from "react-hook-form";
+import { fileTypes } from "../../utils/file-types";
 
 const Form = ({ onSubmit }) => {
   const {
@@ -29,26 +30,16 @@ const Form = ({ onSubmit }) => {
     },
   });
 
-  const fileFormats = [
-    ".pptx",
-    ".docx",
-    ".txt",
-    ".jpeg",
-    ".jpg",
-    ".png",
-    ".mp4",
-    ".zip",
-    ".tar",
-    ".gz",
-  ];
+  const possibleFileTypes = Object.keys(fileTypes).map((type) => `.${type}`);
+
   const searchModes = ["synonyms", "typos", "forms"];
 
-  const [selectedFileFormats, setSelectedFileFormats] = useState([]);
+  const [selectedFileTypes, setSelectedFileTypes] = useState([]);
   const [selectedSearchModes, setSelectedSearchModes] = useState([]);
 
   const resetForm = () => {
     reset();
-    setSelectedFileFormats([]);
+    setSelectedFileTypes([]);
     setSelectedSearchModes([]);
   };
 
@@ -70,7 +61,7 @@ const Form = ({ onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmit(data, selectedFileFormats, selectedSearchModes)
+        onSubmit(data.phrase, data.path, selectedFileTypes, selectedSearchModes)
       )}
     >
       <Stack spacing={3}>
@@ -115,12 +106,12 @@ const Form = ({ onSubmit }) => {
         </FormControl>
 
         <FormControl py={0}>
-          <FormLabel>File formats</FormLabel>
+          <FormLabel>File types</FormLabel>
           <MultiSelectMenu
-            selectedOptions={selectedFileFormats}
-            setSelectedOptions={setSelectedFileFormats}
-            label="File formats"
-            options={[...fileFormats]}
+            selectedOptions={selectedFileTypes}
+            setSelectedOptions={setSelectedFileTypes}
+            label="File types"
+            options={[...possibleFileTypes]}
           />
         </FormControl>
 

@@ -3,27 +3,19 @@ using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MicrsoftExtractorsTest
+namespace MicrosoftExtractorsTest
 {
     [TestClass]
     public class UnitTest1
     {
-        public string init(string extension)
+        public Stream ReadResource(string name)
         {
-            string currentDirectory, file;
-            currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            switch (extension)
-            {
-                case "pptx":
-                    file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestPowerPoint.pptx");
-                    return Path.GetFullPath(file);
-                case "xlsx":
-                    file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestExcel.xlsx");
-                    return Path.GetFullPath(file);
-                default:
-                    file = System.IO.Path.Combine(currentDirectory, @".\TestData\TestWord.docx");
-                    return Path.GetFullPath(file);
-            }
+            // Determine path
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = $"MicrosoftExtractorsTest.TestData.{name}";
+
+            var stream = assembly.GetManifestResourceStream(resourceName);
+            return stream;
         }
 
 
@@ -31,27 +23,23 @@ namespace MicrsoftExtractorsTest
         public void TestReadingMessageFromPowerPoint()
         {
             string text;
-            string filePath = init("pptx");
-            JsonToAnalyze analyze = new JsonToAnalyze();
-            analyze.file = filePath;
+            using var file = ReadResource("TestPowerPoint.pptx");
             MicrosoftExtractor extractor = new MicrosoftExtractor();
 
-            text = extractor.ReadMessageFromPowerPoint(analyze.file);
+            text = extractor.ReadMessageFromPowerPoint(file);
 
             Assert.IsNotNull(text);
-            Assert.AreEqual(text, "Testowa wiadomoœæ powerpoint");
+            Assert.AreEqual(text, "Testowa wiadomosc powerpoint");
         }
 
         [TestMethod]
         public void TestReadingMessageFromWord()
         {
             string text;
-            string filePath = init("docx");
-            JsonToAnalyze analyze = new JsonToAnalyze();
-            analyze.file = filePath;
+            using var file = ReadResource("TestWord.docx");
             MicrosoftExtractor extractor = new MicrosoftExtractor();
 
-            text = extractor.ReadMessageFromWord(analyze.file);
+            text = extractor.ReadMessageFromWord(file);
 
             Assert.IsNotNull(text);
             Assert.AreEqual(text, "Testowa wiadomosc");
@@ -61,15 +49,13 @@ namespace MicrsoftExtractorsTest
         public void TestReadingMessageFromExcel()
         {
             string text;
-            string filePath = init("xlsx");
-            JsonToAnalyze analyze = new JsonToAnalyze();
-            analyze.file = filePath;
+            using var file = ReadResource("TestExcel.xlsx");
             MicrosoftExtractor extractor = new MicrosoftExtractor();
 
-            text = extractor.ReadMessageFromExcel(analyze.file);
+            text = extractor.ReadMessageFromExcel(file);
 
             Assert.IsNotNull(text);
-            Assert.AreEqual(text, "Testowa wiadomosc excel\r\nTestowa wiadomosc excel\r\nTestowa wiadomosc excel\r\n");
+            Assert.AreEqual(text, "Testowa wiadomosc excel\n");
         }
     }
 }
