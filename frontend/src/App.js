@@ -47,6 +47,13 @@ function App() {
   const addResult = (result) => {
     const newResult = parseResult(result);
 
+    //we filter out messages with path to archive
+    //because we don't want to show archives in results list
+    //we want to show only files inside archives (and they come in separately)
+    if (isArchivePath(newResult.originalFile)) {
+      return;
+    }
+
     const currentResult = results.find(
       (res) => res.originalFile === newResult.originalFile
     );
@@ -55,14 +62,10 @@ function App() {
       !currentResult ||
       (!!currentResult && resultShouldBeReplaced(currentResult, newResult))
     ) {
-      if (!isArchivePath(newResult.originalFile)) {
-        setResults((oldResults) => [
-          ...oldResults.filter(
-            (x) => x.originalFile !== newResult.originalFile
-          ),
-          newResult,
-        ]);
-      }
+      setResults((oldResults) => [
+        ...oldResults.filter((x) => x.originalFile !== newResult.originalFile),
+        newResult,
+      ]);
     }
   };
 

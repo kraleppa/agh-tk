@@ -7,9 +7,9 @@ const Result = ({ filePath, fileFormat, parsedFileState }) => {
   const fileStateMap = {
     PHRASE_FOUND: "Phrase found",
     PHRASE_NOT_FOUND: "Phrase not found",
-    FILE_PROCESSED: "File processed",
-    FILE_ERROR: "Error",
-    FILE_PROCESSING: "Processing...",
+    PROCESSED: "File processed",
+    ERROR: "Error",
+    PROCESSING: "Processing...",
   };
 
   return (

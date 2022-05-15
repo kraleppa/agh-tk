@@ -10,11 +10,11 @@ const parseState = (fileState) => {
       ? (parsedState = "PHRASE_FOUND")
       : (parsedState = "PHRASE_NOT_FOUND");
   } else if (fileState.fileProcessed != null) {
-    parsedState = "FILE_PROCESSED";
+    parsedState = "PROCESSED";
   } else if (fileState.fileProcessingError != null) {
-    parsedState = "FILE_ERROR";
+    parsedState = "ERROR";
   } else {
-    parsedState = "FILE_PROCESSING";
+    parsedState = "PROCESSING";
   }
   return parsedState;
 };
@@ -28,6 +28,7 @@ export const parseResult = (result) => {
       fileProcessingError: result.fileState?.fileProcessingError,
       phraseFound: result.found,
     },
+    parsedFileState: "",
   };
 
   resultParsed.parsedFileState = parseState(resultParsed.fileState);
@@ -45,20 +46,24 @@ export const parseResult = (result) => {
   return resultParsed;
 };
 
+//function checking if result should be replaced
+//based on if its state change is valid
 export const resultShouldBeReplaced = (oldResult, newResult) => {
-  //file found -> file processed -> phrase found true/false
+  //valid state changes
+  const oldProcessingNewAny = oldResult.parsedFileState === "PROCESSING";
+  const oldProcessedNewPhraseFoundOrNotFound =
+    oldResult.parsedFileState === "PROCESSED" &&
+    (newResult.parsedFileState === "PHRASE_FOUND" ||
+      newResult.parsedFileState === "PHRASE_NOT_FOUND");
+  const oldAnyNewPhraseFound = newResult.parsedFileState === "PHRASE_FOUND";
+  const oldAnyNewError = newResult.parsedFileState === "ERROR";
 
-  // return false if the phrase was found for the oldResult, and for newResult it was not
-  // checked to handle the video which consists of many frames that are being sent to frontend
-  if (
-    newResult.fileState?.phraseFound != null &&
-    !newResult.fileState?.phraseFound &&
-    oldResult.fileState?.phraseFound != null &&
-    !!oldResult.fileState?.phraseFound
-  ) {
-    return false;
-  }
-  return true;
+  return (
+    oldProcessingNewAny ||
+    oldProcessedNewPhraseFoundOrNotFound ||
+    oldAnyNewPhraseFound ||
+    oldAnyNewError
+  );
 };
 
 export const sendRequest = (client, phrase, path, fileTypes, searchModes) => {
