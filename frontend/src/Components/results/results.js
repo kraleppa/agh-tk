@@ -57,7 +57,7 @@ const Results = ({ results }) => {
             .map((result, i) => (
               <div key={`${result.originalFile}-${i}`}>
                 <Result
-                  path={result.originalFile}
+                  filePath={result.originalFile}
                   fileFormat={result.originalFile.split(".").pop()}
                   parsedFileState={result.parsedFileState}
                 ></Result>

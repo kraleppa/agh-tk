@@ -1,10 +1,8 @@
 import { Box, Badge, Flex, Heading, Grid, GridItem } from "@chakra-ui/react";
-import { fileFormats } from "./file-formats";
+import { fileTypes } from "../../utils/file-types";
 
-const Result = ({ path, fileFormat, parsedFileState }) => {
-  const badgeBackgroundColor = fileFormats.find(
-    (format) => format.value === fileFormat
-  )?.color;
+const Result = ({ filePath, fileFormat, parsedFileState }) => {
+  const badgeBackgroundColor = fileTypes[fileFormat]?.color;
 
   const fileStateMap = {
     PHRASE_FOUND: "Phrase found",
@@ -18,7 +16,7 @@ const Result = ({ path, fileFormat, parsedFileState }) => {
     <Grid templateColumns="repeat(12, 1fr)" gap={4}>
       <GridItem colSpan={8}>
         <Box py="4">
-          <Heading size="sm">{path}</Heading>
+          <Heading size="sm">{filePath}</Heading>
         </Box>
       </GridItem>
       <GridItem colSpan={3}>
