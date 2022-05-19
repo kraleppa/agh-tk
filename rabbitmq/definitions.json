@@ -150,6 +150,13 @@
             "arguments": {}
         },
         {
+            "name": "format.audio",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
             "name": "text",
             "vhost": "/",
             "durable": true,
@@ -250,6 +257,14 @@
             "destination": "format.archive",
             "destination_type": "queue",
             "routing_key": "format.archive.*",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.audio",
+            "destination_type": "queue",
+            "routing_key": "format.audio.*",
             "arguments": {}
         },
         {

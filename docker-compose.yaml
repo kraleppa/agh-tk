@@ -165,6 +165,21 @@ services:
         limits:
           memory: 512M
 
+  audio_service:
+    container_name: audio_service
+    build:
+      context: .
+      dockerfile: ./audio_service/Dockerfile
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
   words_typos:
     container_name: words_typos
     build:
@@ -205,7 +220,6 @@ services:
       - rabbitmq
     volumes:
       - ./:/host
-#      - ./wordsServices_textExtractor_config
     deploy:
       resources:
         limits:
