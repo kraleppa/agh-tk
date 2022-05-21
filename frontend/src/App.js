@@ -69,9 +69,9 @@ function App() {
     }
   };
 
-  const onSubmit = (phrase, path, fileTypes, searchModes) => {
+  const onSubmit = (phrase, path, fileTypes, searchModes, languages) => {
     setResults([]);
-    sendRequest(client, phrase, path, fileTypes, searchModes);
+    sendRequest(client, phrase, path, fileTypes, searchModes, languages);
   };
 
   return (

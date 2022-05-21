@@ -32,10 +32,12 @@ const Form = ({ onSubmit }) => {
 
   const possibleFileTypes = Object.keys(fileTypes).map((type) => `.${type}`);
 
-  const searchModes = ["synonyms", "typos", "forms"];
+  const searchModes = ["synonyms", "typos", "forms", "translations"];
+  const languages = ["English", "German"];
 
   const [selectedFileTypes, setSelectedFileTypes] = useState([]);
   const [selectedSearchModes, setSelectedSearchModes] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
 
   const resetForm = () => {
     reset();
@@ -61,7 +63,7 @@ const Form = ({ onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmit(data.phrase, data.path, selectedFileTypes, selectedSearchModes)
+        onSubmit(data.phrase, data.path, selectedFileTypes, selectedSearchModes, selectedLanguages)
       )}
     >
       <Stack spacing={3}>
@@ -122,6 +124,16 @@ const Form = ({ onSubmit }) => {
             setSelectedOptions={setSelectedSearchModes}
             label="Phrase search modes"
             options={[...searchModes]}
+          />
+        </FormControl>
+
+        <FormControl py={0}>
+          <FormLabel>Languages</FormLabel>
+          <MultiSelectMenu
+            selectedOptions={selectedLanguages}
+            setSelectedOptions={setSelectedLanguages}
+            label="Languages"
+            options={[...languages]}
           />
         </FormControl>
 
