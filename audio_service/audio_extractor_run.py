@@ -1,12 +1,6 @@
 import sys
 import os
 
-log_name = "audio_service"
-exchange = "text"
-routing_key = "text"
-host = "rabbitmq"
-queue = "format.audio"
-
 if __name__ == "__main__":
 
     dir = os.path.dirname(os.getcwd())
@@ -14,6 +8,12 @@ if __name__ == "__main__":
 
     from wordsServices_textExtractor_config import receive_config, receive_connect
     from audio_extractor_callback import AudioExtractorCallback
+
+    log_name = "audio_service"
+    exchange = "text"
+    routing_key = "text"
+    host = "rabbitmq"
+    queue = "format.audio"
 
     serverconfigure = receive_config.RabbitMqServerConfigure(
         host=host,
