@@ -13,8 +13,8 @@ class AudioExtractorCallback():
     def __init__(self, log_name: str, exchange: str, routing_key: str, host: str):
         self.log_name = log_name
         self.exchange = exchange
-        self.routing_key = routing_key
         self.host = host
+        self.routing_key = routing_key
 
     def callback(self, ch, method, properties, body):
 
@@ -26,7 +26,7 @@ class AudioExtractorCallback():
         message = json.loads(body)
         myfile = message["file"]
         logger = receive_config.RabbitMqServerConfigure.create_logger(self.log_name)
-        logger.info(f"Received file: {file}")
+        logger.info(f"Received file: {myfile}")
 
         try:
             text_from_audio = AudioExtractorCallback.extract(myfile)

@@ -1,6 +1,7 @@
 import time
 import pika
 
+
 class RabbitmqServer():
 
     def __init__(self, server, logger):
