@@ -9,4 +9,6 @@ export const fileTypes = {
   zip: { color: "pink.100" },
   tar: { color: "pink.100" },
   gz: { color: "pink.100" },
+  odt: { color: "orange.200" },
+  odf: { color: "orange.200" },
 };
