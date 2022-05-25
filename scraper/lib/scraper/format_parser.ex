@@ -11,7 +11,8 @@ defmodule Scraper.FormatParser do
     ".tar" => "format.archive.tar",
     ".gz" => "format.archive.gz",
     ".odf" => "format.opendoc.odf",
-    ".odt" => "format.opendoc.odt"
+    ".odt" => "format.opendoc.odt",
+    ".pdf" => "format.pdf"
   }
 
   def get_key(format), do: Map.get(@keys, format)

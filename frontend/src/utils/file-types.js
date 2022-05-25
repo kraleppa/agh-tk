@@ -11,4 +11,5 @@ export const fileTypes = {
   gz: { color: "pink.100" },
   odt: { color: "orange.200" },
   odf: { color: "orange.200" },
+  pdf: { color: "yellow.200" }
 };

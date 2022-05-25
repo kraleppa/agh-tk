@@ -105,6 +105,19 @@ services:
         limits:
           memory: 512M
 
+  pdf_service:
+    container_name: pdf_service
+    build: ./pdf_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
   microsoftservice:
     image: ${DOCKER_REGISTRY-}microsoftservice
     container_name: microsoft_service
