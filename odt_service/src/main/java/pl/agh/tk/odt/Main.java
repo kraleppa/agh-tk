@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-//TODO: add this everywhere
 public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
