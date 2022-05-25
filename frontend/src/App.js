@@ -33,7 +33,7 @@ function App() {
     };
     const onMessage = (message) => {
       if (message.body) {
-        console.info("Received message: " + message.body);
+        // console.info("Received message: " + message.body);
         addResult(JSON.parse(message.body));
       } else {
         console.info("Received empty message");
@@ -88,7 +88,7 @@ function App() {
             <Heading>FileFinder</Heading>
           </Box>
           <Form onSubmit={onSubmit} />
-          <Results results={results} />
+          {results.length > 0 && <Results results={results} />}
         </SimpleGrid>
       </Container>
     </Box>
