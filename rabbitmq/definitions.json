@@ -129,6 +129,13 @@
             "arguments": {}
         },
         {
+            "name": "format.opendoc",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
             "name": "format.movie",
             "vhost": "/",
             "durable": true,
@@ -219,6 +226,14 @@
             "destination": "format.image",
             "destination_type": "queue",
             "routing_key": "format.image.*",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.opendoc",
+            "destination_type": "queue",
+            "routing_key": "format.opendoc.*",
             "arguments": {}
         },
         {

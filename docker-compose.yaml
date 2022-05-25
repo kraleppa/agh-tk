@@ -92,6 +92,19 @@ services:
         limits:
           memory: 512M
 
+  odt_service:
+    container_name: odt_service
+    build: ./odt_service
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
   microsoftservice:
     image: ${DOCKER_REGISTRY-}microsoftservice
     container_name: microsoft_service
