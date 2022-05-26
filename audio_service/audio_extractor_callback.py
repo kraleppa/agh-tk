@@ -46,20 +46,25 @@ class AudioExtractorCallback():
             logger.info(f'Published Message: {message}')
 
     @staticmethod
-    def extract(file):
-        # TODO: Switch to reading lang from message when lang service gets implemented
-        lang = "en-US"
+    def extract(file) -> str:
+        langs = ["en-US", "pl"]
         r = sr.Recognizer()
         file = os.path.join(file)
+
+        text_in_all_langs = ""
+
         try:
             with sr.AudioFile(file) as source:
                 r.adjust_for_ambient_noise(source, duration=0.5)
                 audio = r.record(source)
-                try:
-                    return r.recognize_google(audio, key=None, language=lang)
-                except sr.UnknownValueError:
-                    raise Exception(f"{file}: Google Speech Recognition could not understand audio")
-                except sr.RequestError:
-                    raise Exception(f"{file}: Could not request results from Google Speech Recognition service")
+                for lang in langs:
+                    try:
+                        text_in_all_langs = f"{text_in_all_langs}\n{r.recognize_google(audio, language=lang)}"
+                    except sr.UnknownValueError:
+                        raise Exception(f"{file}: Google Speech Recognition could not understand audio")
+                    except sr.RequestError:
+                        raise Exception(f"{file}: Could not request results from Google Speech Recognition service")
         except Exception:
             raise Exception(f"{file}: Error while converting file to audio")
+
+        return text_in_all_langs
