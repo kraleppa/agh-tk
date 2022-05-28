@@ -43,6 +43,9 @@ export const parseResult = (result) => {
     resultParsed.originalFile = result.file;
   }
 
+  resultParsed.text = result.text;
+  resultParsed.words = result.words;
+
   return resultParsed;
 };
 

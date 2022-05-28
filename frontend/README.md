@@ -1,6 +1,7 @@
 # Frontend part of file finder
 
 To start app to dev you need to type
+
 - `npm start`
 - in second terminal `npm run electron`
 
@@ -14,7 +15,7 @@ You may also see any lint errors in the console.
 
 ### `npm run electron`
 
-Starts desktop app connected to web 
+Starts desktop app connected to web
 
 # Getting Started with Create React App
 

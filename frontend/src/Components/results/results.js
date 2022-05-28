@@ -6,12 +6,35 @@ import {
   Grid,
   GridItem,
   Heading,
+  Progress,
+  Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Result from "./result";
 
-const Results = ({ results }) => {
-  const [showOnlyPhraseFound, setShowOnlyPhraseFound] = useState(false);
+const Results = ({ results = [] }) => {
+  const resultsWithPhraseFound = results.filter(
+    (result) => result.parsedFileState === "PHRASE_FOUND"
+  );
+
+  const counts = results.reduce(
+    (acc, result) => {
+      acc[result.parsedFileState]++;
+      return acc;
+    },
+    {
+      PROCESSING: 0,
+      PROCESSED: 0,
+      PHRASE_FOUND: 0,
+      PHRASE_NOT_FOUND: 0,
+      ERROR: 0,
+    }
+  );
+
+  const completedCount =
+    counts.ERROR + counts.PHRASE_NOT_FOUND + counts.PHRASE_FOUND;
+
+  const isAllCompleted = completedCount === results.length;
 
   return (
     <Box mt={8} borderRadius="5px">
@@ -19,23 +42,33 @@ const Results = ({ results }) => {
         Results
       </Heading>
 
-      <Checkbox
-        onChange={(e) => setShowOnlyPhraseFound(e.target.checked)}
-        mb={6}
-        colorScheme="purple"
-      >
-        Show only results with phrase found
-      </Checkbox>
+      {results.length > 0 && (
+        <React.Fragment>
+          <Progress
+            hasStripe
+            isAnimated={!isAllCompleted}
+            min={0}
+            max={results.length}
+            value={completedCount}
+            colorScheme={isAllCompleted ? "green" : "blue"}
+          />
+          <Text fontSize="xl" align="center" my={2}>
+            {!isAllCompleted
+              ? `Processed ${completedCount} of ${results.length} files`
+              : "All files processed!"}
+          </Text>
+        </React.Fragment>
+      )}
 
       <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={8}>
+        <GridItem colSpan={6}>
           <Box py="4">
             <Heading size="md">File path</Heading>
           </Box>
         </GridItem>
-        <GridItem colSpan={3}>
+        <GridItem colSpan={5}>
           <Box py="4">
-            <Heading size="md">Result</Heading>
+            <Heading size="md">Found text</Heading>
           </Box>
         </GridItem>
         <GridItem colSpan={1}>
@@ -47,26 +80,17 @@ const Results = ({ results }) => {
 
       <Divider borderColor="gray.300" />
 
-      {!!results
-        ? results
-            .filter((res) =>
-              showOnlyPhraseFound
-                ? res.parsedFileState === "PHRASE_FOUND"
-                : true
-            )
-            .map((result, i) => (
-              <div key={`${result.originalFile}-${i}`}>
-                <Result
-                  filePath={result.originalFile}
-                  fileFormat={result.originalFile.split(".").pop()}
-                  parsedFileState={result.parsedFileState}
-                ></Result>
-                {i < results.length - 1 ? (
-                  <Divider borderColor="gray.300" />
-                ) : null}
-              </div>
-            ))
-        : null}
+      {resultsWithPhraseFound.map((result, i) => (
+        <div key={`${result.originalFile}-${i}`}>
+          <Result
+            filePath={result.originalFile}
+            fileFormat={result.originalFile.split(".").pop()}
+            text={result.text}
+            words={result.words}
+          />
+          {i < results.length - 1 ? <Divider borderColor="gray.300" /> : null}
+        </div>
+      ))}
     </Box>
   );
 };
