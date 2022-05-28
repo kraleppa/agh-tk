@@ -55,6 +55,5 @@ public class OdtConsumer extends DefaultConsumer {
     private JSONObject getJsonObject(JSONObject json) {
         return json.has("fileState") ?
                 (JSONObject) json.get("fileState") : new JSONObject();
-
     }
 }

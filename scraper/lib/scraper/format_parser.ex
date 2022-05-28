@@ -12,7 +12,8 @@ defmodule Scraper.FormatParser do
     ".gz" => "format.archive.gz",
     ".wav" => "format.audio.wav",
     ".odf" => "format.opendoc.odf",
-    ".odt" => "format.opendoc.odt"
+    ".odt" => "format.opendoc.odt",
+    ".pdf" => "format.pdf"
   }
 
   def get_key(format), do: Map.get(@keys, format)
