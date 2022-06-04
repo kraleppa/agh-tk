@@ -58,6 +58,6 @@ class ConverterCallback():
         dst = os.path.abspath(os.path.join(output_dir, f"{name}.wav"))
 
         if ext == "mp3":
-            subprocess.call(f"ffmpeg -i {file} -ab 160k -ac 2 -ar 44100 -vn {dst}", shell=True)
+            subprocess.call(f"ffmpeg -i {file} {dst}", shell=True)
 
         return dst
