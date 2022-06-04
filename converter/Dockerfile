@@ -8,8 +8,8 @@ RUN mkdir -p /converter
 
 WORKDIR /converter
 
-COPY ./converter/converter_callback.py ./audio_extractor_callback.py
-COPY ./converter/aconverter_run.py ./audio_extractor_run.py
+COPY ./converter/converter_callback.py ./converter_callback.py
+COPY ./converter/converter_run.py ./converter_run.py
 
 COPY ./converter/requirements.txt ./requirements.txt
 RUN pip3 install -r requirements.txt
