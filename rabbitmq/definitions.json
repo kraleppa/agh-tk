@@ -164,6 +164,13 @@
             "arguments": {}
         },
         {
+            "name": "format.unconverted",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
             "name": "text",
             "vhost": "/",
             "durable": true,
