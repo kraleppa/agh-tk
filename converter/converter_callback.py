@@ -48,8 +48,16 @@ class ConverterCallback():
 
     @staticmethod
     def convert(file) -> str:
-        ext = file.
+        filename = os.path.basename(file)
+        name, ext = os.path.splitext(filename)
+
+        output_dir = "/host/extracted/mp3-converted"
+        if not os.path.isdir(output_dir):
+            os.mkdir(output_dir)
+
+        dst = os.path.abspath(os.path.join(output_dir, f"{name}.wav"))
+
         if ext == "mp3":
             subprocess.call(f"ffmpeg -i {file} -ab 160k -ac 2 -ar 44100 -vn {dst}", shell=True)
 
-        return text_in_all_langs
+        return dst
