@@ -19,6 +19,8 @@ public final class Utils {
 
     public static final String ARCHIVE_KEY = "archive";
 
+    public static final String AUDIO_KEY = "audio";
+
     public static final String PATH_IN_VOLUME_KEY = "filePathInVolume";
 
     public static final String PATH_KEY = "path";

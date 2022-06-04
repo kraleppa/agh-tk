@@ -7,13 +7,13 @@ if __name__ == "__main__":
     sys.path.insert(1, dir)
 
     from wordsServices_textExtractor_config import receive_config, receive_connect
-    from audio_extractor_callback import AudioExtractorCallback
+    from converter_callback import ConverterCallback
 
-    log_name = "audio_service"
-    exchange = "text"
-    routing_key = "text"
+    log_name = "converter"
+    exchange = "words"
+    routing_key = "scraper"
     host = "rabbitmq"
-    queue = "format.audio.wav"
+    queue = "format.audio.mp3"
 
     serverconfigure = receive_config.RabbitMqServerConfigure(
         host=host,
@@ -24,5 +24,5 @@ if __name__ == "__main__":
 
     server = receive_connect.RabbitmqServer(server=serverconfigure, logger=logger)
     logger.info("Server started waiting for Messages")
-    callback = AudioExtractorCallback(log_name, exchange, routing_key, host)
+    callback = ConverterCallback(log_name, exchange, routing_key, host)
     server.startserver(callback=callback.callback)

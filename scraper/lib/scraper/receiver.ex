@@ -32,6 +32,7 @@ defmodule Scraper.Receiver do
       {:ok, json} <- Poison.decode(payload),
       video <- Map.get(json, "video"),
       archive <- Map.get(json, "archive"),
+      audio <- Map.get(json, "audio"),
       path when not is_nil(path) <- Map.get(json, "path"),
       file_types when not is_nil(file_types) <- get_in(json, ["filters", "fileTypes"]),
       parsed_path <- parse_path(path)
@@ -41,6 +42,8 @@ defmodule Scraper.Receiver do
           Task.Supervisor.start_child(WorkerSupervisor, Forwarder, :run, [%{archive_or_video: video, json: json}])
         not is_nil(archive) ->
           Task.Supervisor.start_child(WorkerSupervisor, Forwarder, :run, [%{archive_or_video: archive, json: json}])
+        not is_nil(audio) ->
+          Task.Supervisor.start_child(WorkerSupervisor, Forwarder, :run, [%{archive_or_video: audio, json: json}])
         true ->
           Task.Supervisor.start_child(WorkerSupervisor, Worker, :run, [%{path: parsed_path, file_types: file_types, json: json}])
       end
