@@ -3,8 +3,6 @@ import os
 import sys
 import subprocess
 
-import speech_recognition as sr
-
 class ConverterCallback():
     log_name: str
     exchange: str
