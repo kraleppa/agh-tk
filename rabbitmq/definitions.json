@@ -283,6 +283,14 @@
             "arguments": {}
         },
         {
+            "source": "unconverted",
+            "vhost": "/",
+            "destination": "format.unconverted",
+            "destination_type": "queue",
+            "routing_key": "format.unconverted.*",
+            "arguments": {}
+        },
+        {
             "source": "text",
             "vhost": "/",
             "destination": "text",

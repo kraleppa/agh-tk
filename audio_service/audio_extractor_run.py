@@ -13,7 +13,7 @@ if __name__ == "__main__":
     exchange = "text"
     routing_key = "text"
     host = "rabbitmq"
-    queue = "format.audio.wav"
+    queue = "format.audio"
 
     serverconfigure = receive_config.RabbitMqServerConfigure(
         host=host,

@@ -11,7 +11,7 @@ defmodule Scraper.FormatParser do
     ".tar" => "format.archive.tar",
     ".gz" => "format.archive.gz",
     ".wav" => "format.audio.wav",
-    ".mp3" => "format.audio.mp3",
+    ".mp3" => "format.unconverted.mp3",
     ".odf" => "format.opendoc.odf",
     ".odt" => "format.opendoc.odt",
     ".pdf" => "format.pdf"
