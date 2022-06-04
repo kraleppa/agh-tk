@@ -94,6 +94,13 @@
             "arguments": {}
         },
         {
+            "name": "words.translations",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
             "name": "words.forms",
             "vhost": "/",
             "durable": true,
@@ -200,6 +207,14 @@
             "destination": "words.typos",
             "destination_type": "queue",
             "routing_key": "words.typos",
+            "arguments": {}
+        },
+        {
+            "source": "words",
+            "vhost": "/",
+            "destination": "words.translations",
+            "destination_type": "queue",
+            "routing_key": "words.translations",
             "arguments": {}
         },
         {

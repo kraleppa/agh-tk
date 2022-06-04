@@ -69,7 +69,7 @@ export const resultShouldBeReplaced = (oldResult, newResult) => {
   );
 };
 
-export const sendRequest = (client, phrase, path, fileTypes, searchModes) => {
+export const sendRequest = (client, phrase, path, fileTypes, searchModes, languages) => {
   const message = {
     phrase: phrase,
     path: path.replace(/\\/g, "/"),
@@ -78,6 +78,7 @@ export const sendRequest = (client, phrase, path, fileTypes, searchModes) => {
       searchModes: [...searchModes, "scraper"],
     },
     words: phrase.split(" "),
+    languages
   };
 
   const destination = "/exchange/words/words." + message.filters.searchModes[0];

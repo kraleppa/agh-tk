@@ -208,6 +208,13 @@ services:
         limits:
           memory: 512M
 
+  words_translations:
+    container_name: words_translations
+    build: ./translation
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+
   words_forms:
     container_name: words_forms
     build:
