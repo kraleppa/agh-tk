@@ -61,14 +61,19 @@ const Results = ({ results = [] }) => {
       )}
 
       <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={6}>
+        <GridItem colSpan={5}>
           <Box py="4">
             <Heading size="md">File path</Heading>
           </Box>
         </GridItem>
+        <GridItem colSpan={1}>
+          <Box py="4">
+            <Heading size="md">Matches</Heading>
+          </Box>
+        </GridItem>
         <GridItem colSpan={5}>
           <Box py="4">
-            <Heading size="md">Found text</Heading>
+            <Heading size="md">Fragments with found text</Heading>
           </Box>
         </GridItem>
         <GridItem colSpan={1}>
