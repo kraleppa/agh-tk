@@ -290,7 +290,7 @@
             "arguments": {}
         },
         {
-            "source": "unconverted",
+            "source": "format",
             "vhost": "/",
             "destination": "format.unconverted",
             "destination_type": "queue",
