@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     log_name = "converter"
     exchange = "words"
-    routing_key = "scraper"
+    routing_key = "words.scraper"
     host = "rabbitmq"
     queue = "format.unconverted"
 
