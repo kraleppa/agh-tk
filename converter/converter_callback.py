@@ -28,16 +28,17 @@ class ConverterCallback():
         logger.info(f"Received file: {myfile}")
 
         try:
-            converter_file_path = ConverterCallback.convert(myfile)
+            converter_file_path = ConverterCallback.convert(myfile, logger)
+            message["audio"] = {}
             message["audio"]["filePathInVolume"] = converter_file_path
             message["fileState"]["fileProcessed"] = True
             message["fileState"]["fileProcessingError"] = False
             send_connect.RabbitMq.rabbit_send(message, self.host, routing_key="result", exchange="result")
             logger.info("Message was successfully forwarded with routing key: result")
-        except:
+        except Exception as e:
             message['fileState']['fileProcessed'] = False
             message['fileState']['fileProcessingError'] = True
-            # TODO: Consider adding exception to msg
+            logger.error(f'An error occurred while converting or sending with routing key: result, err: {e}')
             logger.warning(f'An error occurred while sending with routing key: result')
         finally:
             send_connect.RabbitMq.rabbit_send(message, self.host, self.routing_key, self.exchange)
@@ -45,17 +46,29 @@ class ConverterCallback():
             logger.info(f'Published Message: {message}')
 
     @staticmethod
-    def convert(file) -> str:
+    def convert(file, logger) -> str:
         filename = os.path.basename(file)
         name, ext = os.path.splitext(filename)
 
-        output_dir = "/host/extracted/mp3-converted"
+        output_dir = f"/host/extracted/{ext}-converted"
         if not os.path.isdir(output_dir):
-            os.mkdir(output_dir)
+            logger.info("output dir not existing, creating it...")
+            os.makedirs(output_dir, exist_ok=True)
+        else:
+            logger.info("output dir already existing")
 
         dst = os.path.abspath(os.path.join(output_dir, f"{name}.wav"))
 
-        if ext == "mp3":
+        if os.path.exists(dst):
+            # TODO: Error?
+            logger.info(f"{dst} file already exists, returning it")
+            return dst
+
+        logger.info(f"Dst file = {dst}")
+
+        if ext == ".mp3":
             subprocess.call(f"ffmpeg -i {file} {dst}", shell=True)
+        else:
+            raise Exception(f"Unsupported conversion extension {ext}")
 
         return dst

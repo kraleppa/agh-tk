@@ -33,7 +33,7 @@ export const parseResult = (result) => {
 
   resultParsed.parsedFileState = parseState(resultParsed.fileState);
 
-  if (!!result.video) {
+  if (!!result.video || !!result.audio) {
     resultParsed.originalFile = result.originalFile
       ? result.originalFile
       : result.file;

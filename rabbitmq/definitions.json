@@ -7,6 +7,12 @@
             "password": "admin",
             "tags": "administrator",
             "limits": {}
+        },
+        {
+            "name": "guest",
+            "password": "guest",
+            "tags": "administrator",
+            "limits": {}
         }
     ],
     "vhosts": [
@@ -17,6 +23,13 @@
     "permissions": [
         {
             "user": "admin",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "guest",
             "vhost": "/",
             "configure": ".*",
             "write": ".*",
