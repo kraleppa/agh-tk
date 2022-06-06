@@ -38,8 +38,7 @@ class ConverterCallback():
         except Exception as e:
             message['fileState']['fileProcessed'] = False
             message['fileState']['fileProcessingError'] = True
-            logger.error(f'An error occurred while converting or sending with routing key: result, err: {e}')
-            logger.warning(f'An error occurred while sending with routing key: result')
+            logger.warning(f'An error occurred while converting or sending with routing key: result, err: {e}')
         finally:
             send_connect.RabbitMq.rabbit_send(message, self.host, self.routing_key, self.exchange)
             logger.info(f'Message was successfully forwarded with routing key: {self.routing_key}')
@@ -52,15 +51,11 @@ class ConverterCallback():
 
         output_dir = f"/host/extracted/{ext}-converted"
         if not os.path.isdir(output_dir):
-            logger.info("output dir not existing, creating it...")
             os.makedirs(output_dir, exist_ok=True)
-        else:
-            logger.info("output dir already existing")
 
         dst = os.path.abspath(os.path.join(output_dir, f"{name}.wav"))
 
         if os.path.exists(dst):
-            # TODO: Error?
             logger.info(f"{dst} file already exists, returning it")
             return dst
 

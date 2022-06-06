@@ -53,15 +53,12 @@ class AudioExtractorCallback():
         text_in_all_langs = ""
 
         if not os.path.exists(file):
-            logger.error(f"Received file {file} doesn't exist")
+            raise Exception(f"Received file {file} doesn't exist")
 
         try:
             with sr.AudioFile(file) as source:
-                logger.info(f"{file} as source")
                 r.adjust_for_ambient_noise(source, duration=0.5)
-                logger.info(f"adjusted {file} to ambient noise")
                 audio = r.record(source)
-                logger.info(f"recorded {file}")
                 for lang in langs:
                     try:
                         text_in_all_langs = f"{text_in_all_langs}\n{r.recognize_google(audio, language=lang)}"
