@@ -7,6 +7,12 @@
             "password": "admin",
             "tags": "administrator",
             "limits": {}
+        },
+        {
+            "name": "guest",
+            "password": "guest",
+            "tags": "administrator",
+            "limits": {}
         }
     ],
     "vhosts": [
@@ -17,6 +23,13 @@
     "permissions": [
         {
             "user": "admin",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "guest",
             "vhost": "/",
             "configure": ".*",
             "write": ".*",
@@ -171,6 +184,13 @@
             "arguments": {}
         },
         {
+            "name": "format.unconverted",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
             "name": "text",
             "vhost": "/",
             "durable": true,
@@ -295,6 +315,14 @@
             "destination": "format.audio",
             "destination_type": "queue",
             "routing_key": "format.audio.*",
+            "arguments": {}
+        },
+        {
+            "source": "format",
+            "vhost": "/",
+            "destination": "format.unconverted",
+            "destination_type": "queue",
+            "routing_key": "format.unconverted.*",
             "arguments": {}
         },
         {

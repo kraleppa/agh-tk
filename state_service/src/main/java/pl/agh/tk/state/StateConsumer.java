@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static pl.agh.tk.state.Utils.ARCHIVE_KEY;
-import static pl.agh.tk.state.Utils.FRAME_PATH_KEY;
-import static pl.agh.tk.state.Utils.PATH_IN_VOLUME_KEY;
-import static pl.agh.tk.state.Utils.VIDEO_KEY;
+import static pl.agh.tk.state.Utils.*;
 
 public class StateConsumer extends DefaultConsumer {
 
@@ -33,6 +30,7 @@ public class StateConsumer extends DefaultConsumer {
             JSONObject msg = new JSONObject(new String(body));
             extractPathAndDeleteIfPossible(msg, VIDEO_KEY, FRAME_PATH_KEY);
             extractPathAndDeleteIfPossible(msg, ARCHIVE_KEY, PATH_IN_VOLUME_KEY);
+            extractPathAndDeleteIfPossible(msg, AUDIO_KEY, PATH_IN_VOLUME_KEY);
         }
     }
 

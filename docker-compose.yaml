@@ -193,6 +193,21 @@ services:
         limits:
           memory: 512M
 
+  converter:
+    container_name: converter
+    build:
+      context: .
+      dockerfile: ./converter/Dockerfile
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./:/host
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
   words_typos:
     container_name: words_typos
     build:
