@@ -29,6 +29,7 @@ export const parseResult = (result) => {
       phraseFound: result.found,
     },
     parsedFileState: "",
+    routingKey: result.routingKey
   };
 
   resultParsed.parsedFileState = parseState(resultParsed.fileState);

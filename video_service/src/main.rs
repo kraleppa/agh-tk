@@ -51,6 +51,8 @@ fn main() -> Result<()> {
                     continue;
                 }
                 let v: Value = res.unwrap();
+                // Forward message to converter so that it does the audio from video handling
+                //channel.basic_publish("format", Publish::new(v.clone().to_string().as_bytes(), "format.unconverted.mp4"));
                 let file_option = v["file"].as_str();
                 if file_option.is_none() {
                     error!("Message does not contain file property");
@@ -99,6 +101,7 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
             fileStateJsonObject.insert("fileProcessed".to_string(), Value::from(true));
             fileStateJsonObject.insert("fileProcessingError".to_string(), Value::from(false));
         }
+        //to_send["extractionSource"] = Value::String("video".to_string());
 
         let mut msg_to_send = to_send.to_string();
         info!("Sending to scraper: {}", msg_to_send);

@@ -19,12 +19,15 @@ defmodule Scraper.Worker do
     Enum.member?(list, format)
   end
 
-  defp parse_and_send(path, %{json: json}) do
-    key =
+  defp parse_and_send(path, %{json: json} = args) do
       Path.extname(path)
       |> FormatParser.get_key()
+      |> Enum.each(&send(path, args, &1))
+  end
 
+  defp send(path, %{json: json}, key) do
     Map.put(json, "file", path)
-      |> Sender.send(key)
+    |> Map.put("routingKey", key)
+    |> Sender.send(key)
   end
 end

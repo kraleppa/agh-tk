@@ -55,7 +55,7 @@ function App() {
     }
 
     const currentResult = results.find(
-      (res) => res.originalFile === newResult.originalFile
+      (res) => res.originalFile === newResult.originalFile && res.routingKey === newResult.routingKey
     );
 
     if (
@@ -63,7 +63,7 @@ function App() {
       (!!currentResult && resultShouldBeReplaced(currentResult, newResult))
     ) {
       setResults((oldResults) => [
-        ...oldResults.filter((x) => x.originalFile !== newResult.originalFile),
+        ...oldResults.filter((x) => (x.originalFile !== newResult.originalFile || x.routingKey !== newResult.routingKey)),
         newResult,
       ]);
     }
