@@ -31,7 +31,7 @@ class ConverterCallback():
             converter_file_path = ConverterCallback.convert(myfile, logger)
             message["audio"] = {}
             message["audio"]["filePathInVolume"] = converter_file_path
-            message["extractionSource"] = "audio"
+            # message["extractionSource"] = "audio"
             message["fileState"]["fileProcessed"] = True
             message["fileState"]["fileProcessingError"] = False
             send_connect.RabbitMq.rabbit_send(message, self.host, routing_key="result", exchange="result")
