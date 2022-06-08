@@ -1,6 +1,5 @@
 import {
   Box,
-  Checkbox,
   Divider,
   Flex,
   Grid,
@@ -9,7 +8,7 @@ import {
   Progress,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import Result from "./result";
 
 const Results = ({ results = [] }) => {
@@ -34,7 +33,8 @@ const Results = ({ results = [] }) => {
   const completedCount =
     counts.ERROR + counts.PHRASE_NOT_FOUND + counts.PHRASE_FOUND;
 
-  const isAllCompleted = completedCount === results.length;
+  const anyCompleted = completedCount !== 0;
+  const allCompleted = completedCount === results.length;
 
   return (
     <Box mt={8} borderRadius="5px">
@@ -42,60 +42,65 @@ const Results = ({ results = [] }) => {
         Results
       </Heading>
 
-      {results.length > 0 && (
+      {results.length > 0 && !allCompleted && (
         <React.Fragment>
           <Progress
             hasStripe
-            isAnimated={!isAllCompleted}
+            isAnimated
+            isIndeterminate={!anyCompleted}
             min={0}
             max={results.length}
             value={completedCount}
-            colorScheme={isAllCompleted ? "green" : "blue"}
+            colorScheme="blue"
           />
           <Text fontSize="xl" align="center" my={2}>
-            {!isAllCompleted
-              ? `Processed ${completedCount} of ${results.length} files`
-              : "All files processed!"}
+            Processed {completedCount} of {results.length} files
           </Text>
         </React.Fragment>
       )}
 
-      <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={5}>
-          <Box py="4">
-            <Heading size="md">File path</Heading>
-          </Box>
-        </GridItem>
-        <GridItem colSpan={1}>
-          <Box py="4">
-            <Heading size="md">Matches</Heading>
-          </Box>
-        </GridItem>
-        <GridItem colSpan={5}>
-          <Box py="4">
-            <Heading size="md">Fragments with found text</Heading>
-          </Box>
-        </GridItem>
-        <GridItem colSpan={1}>
-          <Flex height="100%" alignItems="center" justifyContent="flex-end">
-            <Heading size="md">Format</Heading>
-          </Flex>
-        </GridItem>
-      </Grid>
+      {anyCompleted && (
+        <React.Fragment>
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={5}>
+              <Box py="4">
+                <Heading size="md">File path</Heading>
+              </Box>
+            </GridItem>
+            <GridItem colSpan={1}>
+              <Box py="4">
+                <Heading size="md">Matches</Heading>
+              </Box>
+            </GridItem>
+            <GridItem colSpan={5}>
+              <Box py="4">
+                <Heading size="md">Fragments with found text</Heading>
+              </Box>
+            </GridItem>
+            <GridItem colSpan={1}>
+              <Flex height="100%" alignItems="center" justifyContent="flex-end">
+                <Heading size="md">Format</Heading>
+              </Flex>
+            </GridItem>
+          </Grid>
 
-      <Divider borderColor="gray.300" />
+          <Divider borderColor="gray.300" />
 
-      {resultsWithPhraseFound.map((result, i) => (
-        <div key={`${result.originalFile}-${i}`}>
-          <Result
-            filePath={result.originalFile}
-            fileFormat={result.originalFile.split(".").pop()}
-            text={result.text}
-            words={result.words}
-          />
-          {i < results.length - 1 ? <Divider borderColor="gray.300" /> : null}
-        </div>
-      ))}
+          {resultsWithPhraseFound.map((result, i) => (
+            <div key={`${result.originalFile}-${i}`}>
+              <Result
+                filePath={result.originalFile}
+                fileFormat={result.originalFile.split(".").pop()}
+                text={result.text}
+                words={result.words}
+              />
+              {i < results.length - 1 ? (
+                <Divider borderColor="gray.300" />
+              ) : null}
+            </div>
+          ))}
+        </React.Fragment>
+      )}
     </Box>
   );
 };
