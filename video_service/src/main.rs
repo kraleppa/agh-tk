@@ -51,8 +51,6 @@ fn main() -> Result<()> {
                     continue;
                 }
                 let v: Value = res.unwrap();
-                // Forward message to converter so that it does the audio from video handling
-                //channel.basic_publish("format", Publish::new(v.clone().to_string().as_bytes(), "format.unconverted.mp4"));
                 let file_option = v["file"].as_str();
                 if file_option.is_none() {
                     error!("Message does not contain file property");
