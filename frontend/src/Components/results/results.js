@@ -87,6 +87,7 @@ const Results = ({ results = [] }) => {
             fileFormat={result.originalFile.split(".").pop()}
             text={result.text}
             words={result.words}
+            routingKey={result.routingKey}
           />
           {i < results.length - 1 ? <Divider borderColor="gray.300" /> : null}
         </div>
