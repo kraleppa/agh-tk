@@ -99,6 +99,7 @@ fn send_json_with_frames(channel: &Channel, files_with_frames: &Vector<String>, 
             fileStateJsonObject.insert("fileProcessed".to_string(), Value::from(true));
             fileStateJsonObject.insert("fileProcessingError".to_string(), Value::from(false));
         }
+        //to_send["extractionSource"] = Value::String("video".to_string());
 
         let mut msg_to_send = to_send.to_string();
         info!("Sending to scraper: {}", msg_to_send);

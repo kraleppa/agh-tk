@@ -63,6 +63,8 @@ class ConverterCallback():
 
         if ext == ".mp3":
             subprocess.call(f"ffmpeg -i {file} {dst}", shell=True)
+        elif ext == ".mp4":
+            subprocess.call(f"ffmpeg -i {file} -ab 160k -ac 2 -ar 44100 -vn {dst}", shell=True)
         else:
             raise Exception(f"Unsupported conversion extension {ext}")
 

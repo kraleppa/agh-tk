@@ -86,12 +86,13 @@ const Results = ({ results = [] }) => {
       <Divider borderColor="gray.300" />
 
       {resultsWithPhraseFound.map((result, i) => (
-        <div key={`${result.originalFile}-${i}`}>
+        <div key={`${result.originalFile}-${result.routingKey}-${i}`}>
           <Result
             filePath={result.originalFile}
             fileFormat={result.originalFile.split(".").pop()}
             text={result.text}
             words={result.words}
+            routingKey={result.routingKey}
           />
           {i < results.length - 1 ? <Divider borderColor="gray.300" /> : null}
         </div>
