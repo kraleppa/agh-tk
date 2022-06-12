@@ -17,6 +17,11 @@ services:
       resources:
         limits:
           memory: 512M
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 30
 
   textanalyzer.worker:
     image: ${DOCKER_REGISTRY-}textanalyzerworker
@@ -29,7 +34,8 @@ services:
       - WorkerSettings__Hostname=rabbitmq
       - WorkerSettings__Port=5672
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -39,7 +45,8 @@ services:
     container_name: scraper
     build: ./scraper
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -54,7 +61,8 @@ services:
       dockerfile: ./textExtractor/Dockerfile
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -73,7 +81,8 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -84,7 +93,8 @@ services:
     build: ./ocr_service
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -97,7 +107,8 @@ services:
     build: ./odt_service
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -110,7 +121,8 @@ services:
     build: ./pdf_service
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -129,7 +141,8 @@ services:
       - WorkerSettings__Hostname=rabbitmq
       - WorkerSettings__Port=5672
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -142,7 +155,8 @@ services:
     build: ./state_service
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -155,7 +169,8 @@ services:
     build: ./archive_service
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -168,7 +183,8 @@ services:
     build: ./video_service
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     environment:
       - OUTPUT_DIR=/host/extracted/output/
     volumes:
@@ -185,7 +201,8 @@ services:
       dockerfile: ./audio_service/Dockerfile
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -200,7 +217,8 @@ services:
       dockerfile: ./converter/Dockerfile
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -215,7 +233,8 @@ services:
       dockerfile: ./wordsTypos/Dockerfile
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -228,7 +247,8 @@ services:
     build: ./translation
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   words_forms:
     container_name: words_forms
@@ -237,7 +257,8 @@ services:
       dockerfile: ./wordsForms/Dockerfile
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
@@ -252,7 +273,8 @@ services:
       dockerfile: ./wordsSynonyms/Dockerfile
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./:/host
     deploy:
