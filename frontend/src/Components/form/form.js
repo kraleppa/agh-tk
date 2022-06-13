@@ -127,15 +127,19 @@ const Form = ({ onSubmit }) => {
           />
         </FormControl>
 
-        <FormControl py={0}>
-          <FormLabel>Languages</FormLabel>
-          <MultiSelectMenu
-            selectedOptions={selectedLanguages}
-            setSelectedOptions={setSelectedLanguages}
-            label="Languages"
-            options={[...languages]}
-          />
-        </FormControl>
+        {
+          selectedSearchModes.includes("translations") && (
+            <FormControl py={0}>
+              <FormLabel>Languages</FormLabel>
+              <MultiSelectMenu
+                selectedOptions={selectedLanguages}
+                setSelectedOptions={setSelectedLanguages}
+                label="Languages"
+                options={[...languages]}
+              />
+            </FormControl>
+          )
+        }
 
         <ButtonGroup>
           <Stack spacing={[2, 4]} mt={4} direction={["column", "row"]}>
